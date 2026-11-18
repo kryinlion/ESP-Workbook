@@ -141,7 +141,7 @@ button { font: inherit; color: inherit; }
 .trow { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--field); }
 .trow.overflow { border-style: dashed; }
 .trow-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-.rownum { width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+.rownum { width: 26px; height: 26px; border-radius: 50%; background: var(--green); color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
 .tag { font-size: 11px; color: var(--muted); }
 .spacer { flex: 1; }
 .mini { border: 1px solid var(--line); background: var(--card); border-radius: 8px; width: 32px; height: 30px; }
@@ -154,14 +154,16 @@ button { font: inherit; color: inherit; }
 .total-line b { color: var(--green); }
 
 .hours { display: grid; gap: 8px; width: 100%; }
-.hrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--field); }
-.hlabel { flex: 1 1 100%; font-weight: 600; font-size: 14.5px; }
+.hrow { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); gap: 6px; align-items: end; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--field); }
+.hlabel { grid-column: 1 / -1; font-weight: 600; font-size: 14.5px; }
+.hrow .inp { padding: 10px 6px; text-align: center; }
 .hlabel small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
-.hcell { flex: 1 1 80px; }
+.hcell { min-width: 0; }
 .hcell span, .hcarry span { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 3px; }
 .hcell .inp { background: var(--card); }
-.fixed { padding: 11px 12px; font-weight: 700; }
-.hcarry { flex: 1 1 60px; padding-bottom: 8px; }
+.fixed { padding: 10px 6px; font-weight: 700; text-align: center; }
+.hcarry { min-width: 0; padding-bottom: 9px; text-align: center; }
+.hcell span { text-align: center; }
 .hcarry b { font-size: 17px; }
 .hcarry.total b { color: var(--green); }
 .hrow.grand { background: var(--navy); color: #fff; border-color: var(--navy); }

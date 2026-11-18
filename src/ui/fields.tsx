@@ -163,8 +163,8 @@ function Table({ f, rows, onChange }: { f: Field; rows: any[]; onChange: (v: any
 }
 
 function Cell({ c, row, onChange }: { c: Column; row: any; onChange: (v: any) => void }) {
-  const wide = !c.type || c.type === 'text';
-  if (c.type === 'choice') return <div class="cell"><span class="clbl">{c.label}</span><Seg options={c.options!} value={row[c.id]} onChange={onChange} /></div>;
+  const wide = (!c.type || c.type === 'text') && !c.half;
+  if (c.type === 'choice') return <div class={`cell${c.half ? ' half' : ''}`}><span class="clbl">{c.label}</span><Seg options={c.options!} value={row[c.id]} onChange={onChange} /></div>;
   if (c.calc) {
     const auto = c.calc(row);
     return <div class="cell half"><span class="clbl">{c.label}</span>
@@ -186,7 +186,7 @@ function Hours({ f }: { f: Field }) {
   const report = f.phase === 'report';
   const pv = (values()['hours.proposal'] || {}) as any, plv = (values()['hours.plan'] || {}) as any;
   return (
-    <div class="hours">
+    <div class="hours" style={{ '--cols': report ? 5 : 2 } as any}>
       {HOURS_ROWS.map((r) => (
         <div class="hrow">
           <div class="hlabel">{r.label}{'hint' in r && <small>{r.hint}</small>}</div>
@@ -195,7 +195,7 @@ function Hours({ f }: { f: Field }) {
           <label class="hcell"><span>{report ? 'Workers' : 'People'}</span>
             {'fixedN' in r ? <div class="fixed">1</div> : <input class="inp" inputMode="numeric" value={val[r.key]?.n ?? ''} onInput={(e: any) => upd(r.key, 'n', e.target.value)} />}
           </label>
-          <label class="hcell"><span>{report ? 'Work hours' : 'Hours'}</span>
+          <label class="hcell"><span>Hours</span>
             <input class="inp" inputMode="decimal" value={val[r.key]?.h ?? ''} onInput={(e: any) => upd(r.key, 'h', e.target.value)} />
           </label>
           {report && <div class="hcarry total"><span>Total</span><b>{t.rowTotal(r.key)}</b></div>}

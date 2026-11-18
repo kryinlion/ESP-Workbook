@@ -10,6 +10,7 @@ export interface Column {
   id: string;
   label: string;
   type?: 'text' | 'num' | 'money' | 'choice';
+  half?: boolean;
   options?: string[];
   pdf?: (row: number) => string; // row is 1-based
   calc?: (row: Record<string, any>) => number;
@@ -82,11 +83,11 @@ function person(prefix: string, title: string, map: Record<string, string>, intr
 const MONEY_COLS = (suffix: string): Column[] => [
   { id: 'item', label: 'Item', pdf: (r) => `ItemRow${r}${suffix}` },
   { id: 'desc', label: 'Description', pdf: (r) => `DescriptionRow${r}${suffix}` },
-  { id: 'qty', label: 'Quantity', type: 'num', pdf: (r) => `QuantityRow${r}${suffix}` },
+  { id: 'qty', label: 'Quantity', type: 'num', half: true, pdf: (r) => `QuantityRow${r}${suffix}` },
   { id: 'unit', label: 'Unit cost', type: 'money', pdf: (r) => `Unit CostRow${r}${suffix}` },
   { id: 'total', label: 'Total cost', type: 'money', pdf: (r) => `Total CostRow${r}${suffix}`,
     calc: (row) => (num(row.qty) * num(row.unit)) },
-  { id: 'source', label: 'Source', pdf: (r) => `SourceRow${r}${suffix}` },
+  { id: 'source', label: 'Source', half: true, pdf: (r) => `SourceRow${r}${suffix}` },
 ];
 
 export function num(x: any): number {
@@ -337,7 +338,7 @@ export const SECTIONS: Section[] = [
           id: 'plan.steps', type: 'table', label: 'Steps', pdfRows: 10, example: 'Paint all parts prior to assembly — 1 day',
           columns: [
             { id: 'step', label: 'Step', pdf: (r) => `Step ${r}` },
-            { id: 'duration', label: 'Expected duration', pdf: (r) => (r === 1 ? 'EXPECTED DURATION' : r === 10 ? 'EXPECTED DURATION10' : `EXPECTED DURATION_${r}`) },
+            { id: 'duration', label: 'Expected duration', half: true, pdf: (r) => (r === 1 ? 'EXPECTED DURATION' : r === 10 ? 'EXPECTED DURATION10' : `EXPECTED DURATION_${r}`) },
           ],
         }],
       },

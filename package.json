@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "test:pdf": "rolldown scripts/test-pdf.ts --platform node --format esm -o scripts/out/test-pdf.mjs && node scripts/out/test-pdf.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",
