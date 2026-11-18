@@ -57,12 +57,12 @@ export async function fillWorkbook(template: ArrayBuffer | Uint8Array, v: Record
         overflows.push({ title: title || name, text });
         f.setText(fit.text);
       } else f.setText(text);
-      f.setFontSize(fit.size);
+      setSize(f, fit.size);
     } else {
       f.setText(text);
       let size = Math.min(10, Math.max(6, r.height * 0.72));
       while (size > 6 && helv.widthOfTextAtSize(text, size) > r.width - 4) size -= 0.5;
-      f.setFontSize(size);
+      setSize(f, size);
     }
   };
 
@@ -183,6 +183,19 @@ export async function fillWorkbook(template: ArrayBuffer | Uint8Array, v: Record
 
 const the = (n?: number) => n || 0;
 
+function setSize(f: PDFTextField, size: number) {
+  // Widgets can carry their own /DA that overrides the field's, so set both.
+  const patch = (da: string | undefined) =>
+    da && /Tf/.test(da) ? da.replace(/(\/[^\s]+)\s+[\d.]+\s+Tf/, `$1 ${size} Tf`) : `/Helv ${size} Tf 0 g`;
+  let fieldDa: string | undefined;
+  try { fieldDa = f.acroField.getDefaultAppearance(); } catch { /* ignore */ }
+  const next = patch(fieldDa);
+  try { f.acroField.setDefaultAppearance(next); } catch { /* ignore */ }
+  for (const w of f.acroField.getWidgets()) {
+    try { w.setDefaultAppearance(patch(w.getDefaultAppearance() || next)); } catch { /* ignore */ }
+  }
+}
+
 function fitText(text: string, font: PDFFont, w: number, h: number): { size: number; text: string; overflow: boolean } {
   for (let size = 10; size >= 7; size -= 0.5) {
     const lines = wrap(text, font, size, w);
@@ -253,9 +266,9 @@ class Attach {
     for (const l of lines) { this.page!.drawText(l, { x: 54, y: this.y, size: 13, font: this.fb, color: NAVY }); this.y -= 17; }
     this.y -= 6;
   }
-  private ensure(hgt: number, heading: string) { if (!this.page || this.y - hgt < 60) this.newPage(heading); }
+  private section(title: string) { if (!this.page || this.y < 200) this.newPage(title); else { this.y -= 14; this.heading(title); } }
   textBlock(title: string, text: string) {
-    this.newPage(title);
+    this.section(title);
     for (const l of wrap(text, this.f, 10.5, 504)) {
       if (this.y < 60) this.newPage(title);
       this.page!.drawText(l, { x: 54, y: this.y, size: 10.5, font: this.f });
@@ -263,7 +276,7 @@ class Attach {
     }
   }
   table(title: string, field: Field, rows: any[], startAt: number) {
-    this.newPage(title);
+    this.section(title);
     const cols = field.columns!;
     rows.forEach((row, i) => {
       const parts = cols.map((c) => {
@@ -278,7 +291,7 @@ class Attach {
     });
   }
   async photos(title: string, ps: { id: string; caption?: string }[], load: MediaLoader) {
-    this.newPage(title);
+    this.section(title);
     for (const p of ps) {
       const m = await load(p.id);
       if (!m) continue;
