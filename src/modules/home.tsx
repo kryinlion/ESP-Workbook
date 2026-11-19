@@ -3,6 +3,7 @@ import { SECTIONS, CHECKLIST } from '../workbook/schema';
 import { overallProgress, sectionProgress } from '../workbook/progress';
 import { isoToUs } from '../ui/fields';
 import { MODULES } from './registry';
+import { Hero } from '../ui/hero';
 
 export function Home() {
   const p = useProject();
@@ -18,18 +19,14 @@ export function Home() {
 
   return (
     <div class="page">
-      <section class="hero">
-        <p class="eyebrow">Eagle Scout Leadership Service Project</p>
-        <h1>{v['project.title'] || 'Your Eagle Project'}</h1>
-        <p class="who">{v['cand.fullName'] || <a href="#/workbook/start">Add your name and project title →</a>}</p>
-        <div class="ring-row">
-          <Ring pct={all.pct} />
-          <div>
-            <b>{all.done} of {all.total}</b> workbook answers filled in
-            {nextStep >= 0 && <p class="next">Next step {nextStep + 1}: {CHECKLIST[nextStep]}</p>}
-          </div>
+      <Hero pct={all.pct} done={all.done} total={all.total} below={
+        <div class="hero-meta">
+          {v['cand.fullName'] || v['project.title']
+            ? <p class="who"><b>{v['cand.fullName']}</b>{v['cand.fullName'] && v['project.title'] ? ' · ' : ''}{v['project.title']}</p>
+            : <a class="who-link" href="#/workbook/start">Add your name and project title →</a>}
+          <p class="next">{all.done} of {all.total} answers{nextStep >= 0 ? <> · <b>Next step {nextStep + 1}:</b> {CHECKLIST[nextStep]}</> : null}</p>
         </div>
-      </section>
+      } />
 
       {(days === null || days >= 7) && (
         <a href="#/export" class="card warn">
@@ -70,16 +67,5 @@ export function Home() {
         ))}
       </div>
     </div>
-  );
-}
-
-function Ring({ pct }: { pct: number }) {
-  const r = 26, c = 2 * Math.PI * r;
-  return (
-    <svg class="ring" viewBox="0 0 64 64" width="64" height="64" aria-label={`${pct}% complete`}>
-      <circle cx="32" cy="32" r={r} class="ring-bg" />
-      <circle cx="32" cy="32" r={r} class="ring-fg" stroke-dasharray={`${(pct / 100) * c} ${c}`} transform="rotate(-90 32 32)" />
-      <text x="32" y="37" text-anchor="middle">{pct}%</text>
-    </svg>
   );
 }
