@@ -339,3 +339,19 @@ button { font: inherit; color: inherit; }
 .due-main small { color: var(--muted); white-space: nowrap; }
 .due-foot { display: flex; flex-wrap: wrap; gap: 4px 16px; border-top: 1px solid var(--line); padding-top: 8px; font-size: 13px; color: var(--muted); }
 .lnk { color: var(--green); font-weight: 650; }
+
+/* ── One-button backup sheet */
+.bk-bg { position: fixed; inset: 0; z-index: 60; background: rgba(5,12,20,.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: grid; place-items: center; padding: 24px; }
+.bk { width: 100%; max-width: 360px; background: var(--card); border-radius: 22px; padding: 30px 24px 18px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,.45); animation: bk-in .28s cubic-bezier(.2,.9,.3,1.2); }
+@keyframes bk-in { from { transform: translateY(16px) scale(.96); opacity: 0; } }
+.bk-icon { width: 76px; height: 76px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--green) 16%, transparent); color: var(--green); }
+.bk-icon.ok { background: var(--green); color: #fff; font-size: 38px; font-weight: 800; }
+.bk h2 { font-size: 23px; margin: 0 0 6px; }
+.bk-sub { margin: 0 0 22px; color: var(--muted); font-size: 15px; }
+.bk-go { display: block; width: 100%; border: 0; border-radius: 16px; padding: 18px; font-size: 19px; font-weight: 750; background: var(--gold); color: #10161d; cursor: pointer; box-shadow: 0 6px 18px color-mix(in srgb, var(--gold) 40%, transparent); }
+.bk-go:disabled { opacity: .6; box-shadow: none; }
+.bk-hint { margin: 12px 0 4px; font-size: 13.5px; color: var(--muted); }
+.bk-hint b { color: var(--ink); font-weight: 650; }
+.bk-err { color: var(--danger); font-size: 13px; }
+.bk-later { margin-top: 10px; background: none; border: 0; color: var(--muted); font-size: 15px; padding: 10px 20px; cursor: pointer; }
+.bk-card { text-align: left; width: 100%; font: inherit; color: inherit; cursor: pointer; }

@@ -1,7 +1,8 @@
 import { useState } from 'preact/hooks';
 import { project, useProject, flush } from '../core/store';
 import { clearAll, getMedia } from '../core/db';
-import { backupNow, restoreBackup, shareOrDownload } from '../core/backup';
+import { restoreBackup, shareOrDownload } from '../core/backup';
+import { openBackup } from '../ui/backupPrompt';
 
 const safe = (s: string) => (s || '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40);
 
@@ -54,9 +55,7 @@ export function ExportScreen() {
         <h2>Backup</h2>
         <p class="intro">Your work saves on this device automatically as you type. A backup is one file with everything, photos included. Save it to <b>iCloud Drive</b> or <b>Files</b>, or AirDrop it to your iPad and tap Restore there.</p>
         <p class="muted">{days === null ? 'No backup saved yet.' : days === 0 ? 'Last backup: today.' : `Last backup: ${days} day${days === 1 ? '' : 's'} ago.`}</p>
-        <button class="btn wide" disabled={!!busy} onClick={() => run('backup', async () => { const r = await backupNow(); if (r !== 'cancelled') setMsg('✓ Backup saved'); })}>
-          {busy === 'backup' ? 'Packing…' : '💾 Save backup'}
-        </button>
+        <button class="btn wide" disabled={!!busy} onClick={openBackup}>🛡 Back up now</button>
         <label class="btn ghost wide file-btn">
           ⟲ Restore from a backup…
           <input type="file" accept=".zip,application/zip" hidden onChange={(e) => { const f = (e.target as HTMLInputElement).files?.[0]; (e.target as HTMLInputElement).value = ''; if (f) setRestoreFile(f); }} />

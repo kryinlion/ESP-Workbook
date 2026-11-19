@@ -4,6 +4,7 @@ import { overallProgress, sectionProgress } from '../workbook/progress';
 import { isoToUs } from '../ui/fields';
 import { MODULES } from './registry';
 import { Hero } from '../ui/hero';
+import { openBackup } from '../ui/backupPrompt';
 import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus, timeline, todayIso } from '../timeline/model';
 
 export function Home() {
@@ -30,10 +31,10 @@ export function Home() {
       } />
 
       {(days === null || days >= 7) && (
-        <a href="#/export" class="card warn">
+        <button type="button" class="card warn bk-card" onClick={openBackup}>
           <b>{days === null ? 'No backup yet' : `Last backup ${days} days ago`}</b>
-          <span>Everything saves on this device automatically. Save a backup to iCloud Drive so nothing is ever lost.</span>
-        </a>
+          <span>Tap to back up your project to iCloud Drive.</span>
+        </button>
       )}
 
       <DueSoon />

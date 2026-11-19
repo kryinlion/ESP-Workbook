@@ -6,6 +6,7 @@ import { Workbook } from './modules/workbook';
 import { ExportScreen } from './modules/export';
 import { ComingSoon } from './modules/coming';
 import { Timeline } from './modules/timeline';
+import { BackupPrompt } from './ui/backupPrompt';
 
 export function useRoute() {
   const [r, setR] = useState(location.hash.slice(1) || '/');
@@ -38,6 +39,7 @@ export function App() {
         <a href="#/export" class="share-btn" aria-label="Export and backup">⇪</a>
       </header>
       <main>{screen}</main>
+      <BackupPrompt />
       <nav class="tabbar">
         {MODULES.filter((m) => m.tab).map((m) => (
           <a href={`#/${m.id === 'home' ? '' : m.id}`} class={top === m.id ? 'on' : ''}>
