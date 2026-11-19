@@ -19,7 +19,7 @@ const LABEL: Record<string, string> = Object.fromEntries(ALL_FIELDS.map(({ secti
   const group = section.groups.find((g) => g.fields.some((f) => f.id === field.id));
   return [field.id, `${section.short}: ${group && group.title !== field.label ? group.title + ' — ' : ''}${field.label}`];
 }));
-export const labelOf = (id: string) => LABEL[id] || id;
+export const labelOf = (id: string) => (id === 'money.donorContacts' ? 'Money: donor emails, phones & addresses (only the ones you need)' : LABEL[id] || id);
 
 const filled = (v: any) => v !== undefined && v !== null && v !== '' && v !== PLACEHOLDER;
 
@@ -68,7 +68,32 @@ export function mergeRestore(cloud: Record<string, any>, local: Record<string, a
 
 /** Is a re-enter item done yet? */
 export function isReentered(id: string, values: Record<string, any>): boolean {
+  if (id === 'money.donorContacts') return false; // dismissed by hand
   const v = values[id];
   if (SIG_FIELDS.includes(id)) return !!v && (filled(v.typed) || !!v.drawn);
   return filled(v);
+}
+
+// ── Money: donor NAMES go to the cloud; their email / phone / address do not (decided 2026-11-19).
+const DONOR_PRIVATE = ['email', 'phone', 'address'] as const;
+export const DONOR_REENTER = 'money.donorContacts';
+export function scrubMoney(doc: any): any {
+  if (!doc?.donors) return doc;
+  return { ...doc, donors: doc.donors.map((d: any) => { const c = { ...d }; for (const k of DONOR_PRIVATE) if (filled(c[k])) c[k] = PLACEHOLDER; return c; }) };
+}
+/** Restore: keep this device's donor contact details (matched by donor id); placeholders never overwrite. */
+export function mergeMoney(cloud: any, local: any): { doc: any; reenter: boolean } {
+  if (!cloud?.donors) return { doc: cloud, reenter: false };
+  const mine = new Map<string, any>((local?.donors || []).map((d: any) => [d.id, d]));
+  let reenter = false;
+  const donors = cloud.donors.map((d: any) => {
+    const l = mine.get(d.id) || {};
+    const m = { ...d };
+    for (const k of DONOR_PRIVATE) {
+      if (filled(l[k])) m[k] = l[k];
+      else if (m[k] === PLACEHOLDER) { delete m[k]; reenter = true; }
+    }
+    return m;
+  });
+  return { doc: { ...cloud, donors }, reenter };
 }

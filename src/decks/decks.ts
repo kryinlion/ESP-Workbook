@@ -7,6 +7,7 @@ import { allItems, daysBetween, deadline18, phaseOf, todayIso } from '../timelin
 import { isoToUs } from '../ui/fields';
 import { actionsOf, allMeetings, attendees, getMeeting, longDate, meetingTitle, time12, usDate, type Meeting } from '../meetings/model';
 import { agendaItems } from '../meetings/agenda';
+import { CATEGORIES, FROM, eventRaised, expenseTotal, giftLabel, sortedDonations, sortedEvents, sortedExpenses, totals as moneyTotals } from '../money/model';
 
 // The decks. Each one is built live from Colin's answers, so it's always up to date —
 // slides with nothing filled in are skipped.
@@ -187,9 +188,44 @@ function meetingLogDeck(v: Record<string, any>): Deck {
   return { id: 'meetings', title: 'Meeting log', file: fileName(v, 'Meeting_Log'), slides: number(s) };
 }
 
+// ───────────── 6. Fundraising & budget ─────────────
+function fundraisingDeck(v: Record<string, any>): Deck {
+  const ctx = ctxFor(v);
+  const t = moneyTotals();
+  const s: Slide[] = [titleSlide({ kicker: 'Fundraising & Budget', title: titleOf(v), sub: str(v['cand.fullName']), meta: unitLine(v), cover: cover(v) })];
+  const stats = [
+    ...(t.goal ? [{ value: money(t.goal), label: t.goalIsEstimate ? 'goal (cost estimate)' : 'fundraising goal' }] : []),
+    { value: money(t.raised + t.inKind), label: t.inKind ? 'raised, incl. donated items' : 'raised so far' },
+    ...(t.goal ? [{ value: `${t.pct}%`, label: 'of goal' }] : []),
+    ...(t.spent ? [{ value: money(t.spent), label: 'spent' }] : []),
+  ];
+  s.push(statsSlide(ctx, 'Where we stand', stats, 'Progress'));
+  s.push(...text(ctx, 'How I will raise the money', v, 'prop.fundraising', [], 'The plan'));
+  const evs = sortedEvents();
+  if (evs.length) s.push(...tableSlides(ctx, 'Fundraising events', ['Date', 'Event', 'Goal', 'Raised'],
+    evs.map((e) => [e.date ? isoToUs(e.date) : 'TBD', e.title || 'Fundraiser', num(e.goal) ? money(num(e.goal)) : '', money(eventRaised(e.id))]),
+    [1.4, 4, 1.5, 1.5], { kicker: 'Events', align: ['left', 'left', 'right', 'right'] }));
+  if (t.raised || t.inKind) s.push(...tableSlides(ctx, 'Where the money comes from', ['Source', 'Amount'],
+    [...FROM.map((f) => [f.label, money(t.byFrom[f.id])]), ['Donated items (value)', money(t.inKind)]], [4, 2],
+    { kicker: 'Sources', total: ['Total', money(t.raised + t.inKind)], align: ['left', 'right'] }));
+  const est: Record<string, number> = { materials: num(v['prop.costMaterials']), supplies: num(v['prop.costSupplies']), tools: num(v['prop.costTools']), other: num(v['prop.costOther']) };
+  if (t.spent || t.estimate) s.push(...tableSlides(ctx, 'Budget vs. actual', ['Category', 'Estimated', 'Spent'],
+    CATEGORIES.map((c) => [c.label, est[c.id] ? money(est[c.id]) : '', money(t.byCat[c.id])]), [3, 2, 2],
+    { kicker: 'Spending', total: ['Total', money(t.estimate), money(t.spent)], align: ['left', 'right', 'right'] }));
+  const ex = sortedExpenses().reverse();
+  if (ex.length) s.push(...tableSlides(ctx, 'Purchases', ['Date', 'Item', 'Where from', 'Total'],
+    ex.map((e) => [isoToUs(e.date), e.item, e.vendor || '', money(expenseTotal(e))]), [1.3, 4, 2.4, 1.4],
+    { kicker: 'Spending', total: ['Total', '', '', money(t.spent)], align: ['left', 'left', 'left', 'right'] }));
+  const donors = [...new Set(sortedDonations().filter((g) => g.donorId).map(giftLabel))].sort();
+  if (donors.length) s.push(...bulletSlides(ctx, 'Thank you to our donors', donors, 'Gratitude'));
+  s.push(closingSlide('Thank you', 'Every dollar and donated item goes into the project.'));
+  return { id: 'fundraising', title: 'Fundraising & budget', file: fileName(v, 'Fundraising'), slides: number(s) };
+}
+
 export const DECKS: DeckDef[] = [
   { id: 'proposal', title: 'Proposal presentation', when: 'For proposal approval meetings', blurb: 'Your project idea, beneficiary, timeline, cost, and safety — for your Scoutmaster, committee, beneficiary, and council.', build: proposalDeck },
   { id: 'progress', title: 'Progress update', when: 'Anytime', blurb: 'Where things stand: % complete, steps done, what\'s next, and recent photos.', build: progressDeck },
+  { id: 'fundraising', title: 'Fundraising & budget', when: 'For donors and your board of review', blurb: 'Your goal and progress, fundraising events, where the money comes from, budget vs. actual, and a thank-you to donors.', build: fundraisingDeck },
   { id: 'meetings', title: 'Meeting log', when: 'For your board of review', blurb: 'Every advisor meeting: who was there, what was decided, and which action items got done.', build: meetingLogDeck },
   { id: 'meeting', title: 'Meeting summary', when: 'After a meeting', hidden: true, blurb: '', build: meetingDeck },
   { id: 'report', title: 'Project report', when: 'After the work is done', blurb: 'Before, during, and after photos, the numbers, and what you learned — for your board of review.', build: reportDeck },

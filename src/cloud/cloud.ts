@@ -14,7 +14,7 @@ import {
 import { getStorage, ref, uploadBytes, getBytes, listAll } from 'firebase/storage';
 import { getFirestore, doc as fsDoc, setDoc } from 'firebase/firestore/lite';
 import { firebaseConfig } from './config';
-import { scrubValues, mergeRestore } from './scrub';
+import { scrubValues, mergeRestore, scrubMoney, mergeMoney, DONOR_REENTER } from './scrub';
 import { allDocs, allMedia, putDoc, putMedia } from '../core/db';
 import { flush, loadProject } from '../core/store';
 import { flushAllDocStores, loadAllDocStores } from '../core/docstore';
@@ -89,11 +89,11 @@ export async function backupToCloud(force = false): Promise<'done' | 'unchanged'
     const media = await allMedia();
     const proj = docs.project;
     const { values, skipMedia } = scrubValues(proj?.values || {});
-    const cloudDocs = { ...docs, project: proj ? { ...proj, values, meta: { ...proj.meta, backupSnoozeUntil: undefined } } : proj };
+    const cloudDocs: Record<string, any> = { ...docs, project: proj ? { ...proj, values, meta: { ...proj.meta, backupSnoozeUntil: undefined } } : proj, ...(docs.money ? { money: scrubMoney(docs.money) } : {}) };
     const keep = media.filter((m) => !skipMedia.includes(m.id));
     const mediaMeta = keep.map((m) => ({ id: m.id, type: m.type, w: m.w, h: m.h, name: m.name, createdAt: m.createdAt, path: `media/${m.id}.${ext(m.type)}` }));
     // hash ignores fields that change on every save but carry no answers
-    const hash = await sha(JSON.stringify([cloudDocs.project?.values, Object.keys(docs).filter((k) => k !== 'project').map((k) => docs[k]), mediaMeta.map((m) => m.id)]));
+    const hash = await sha(JSON.stringify([cloudDocs.project?.values, Object.keys(cloudDocs).filter((k) => k !== 'project').map((k) => cloudDocs[k]), mediaMeta.map((m) => m.id)]));
     const prev = JSON.parse(localStorage.getItem(LS) || '{}');
     if (!force && prev.hash === hash && prev.uid === uid) { set({ busy: '' }); return 'unchanged'; }
 
@@ -157,6 +157,12 @@ export async function restoreFromCloud(): Promise<string[]> {
     const { values, reenter } = mergeRestore(cp?.values || {}, lp?.values || {});
     for (const [k, v] of Object.entries<any>(j.docs)) {
       if (k === 'project') continue;
+      if (k === 'money') {
+        const mm = mergeMoney(v, local.money);
+        if (mm.reenter) reenter.push(DONOR_REENTER);
+        await putDoc(k, mm.doc);
+        continue;
+      }
       await putDoc(k, v);
     }
     await putDoc('project', {

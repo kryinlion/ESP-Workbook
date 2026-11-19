@@ -5,7 +5,7 @@ Workflow: Claude commits locally → Mark pushes with GitHub Desktop → GitHub 
 
 ## ▶ RESUME HERE
 Firebase + P6a cloud backup are DONE (2026-11-19). Colin does NOT use the app until Mark says it's fully built.
-Next build phase: P5 Money. P3 Presentations + P4 Advisor meetings done.
+All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mark's review → update-safety TODOs → Colin launch checklist. Later: P6b Sync, P7 Native, multi-Scout.
 
 ## 🚀 Colin launch checklist (Mark will ask for this when building is complete)
 1. ✅ **Sign-ups off** (done 2026-11-19): Firebase → Authentication → Settings → User actions →
@@ -57,7 +57,11 @@ Next build phase: P5 Money. P3 Presentations + P4 Advisor meetings done.
   line → **Agenda PDF** with note lines + **Send as text**), notes, decisions, photos. **Action items = real Timeline
   tasks** tagged `meetingId` (no double tracking). Meetings show on the Timeline as milestones. Decks: Meeting summary
   (per meeting) + Meeting log (all). Doc store key `meetings` (schema 1).
-- **P5 Money** (next; adds its own Fundraising deck to `DECKS`)
+- **P5 Money** ✅ 2026-11-19 — `src/money/` + `#/money` (Overview · Donations · Expenses · Donors · Events). Decided
+  with Mark: donor NAMES go to cloud, donor email/phone/address → `[re-enter]` (`scrubMoney`/`mergeMoney`, tested);
+  workbook money boxes filled only via **Copy into workbook** (review table → tap; Plan p.17 + Report p.21 + spending
+  table); one overall goal (defaults to proposal cost estimate) + fundraising events (on Timeline); each donation has
+  payment type + who holds it; thank-you tracking. Deck: Fundraising & budget. Doc store key `money` (schema 1).
 - **P6b Sync** iPhone ⇄ iPad on the same Firebase foundation (protected fields entered once per device).
 - **P7 Native** (Capacitor, TestFlight).
 - **First update phase / last phase — Multi-Scout ("bring your own backup")**: let other Scouts use the app

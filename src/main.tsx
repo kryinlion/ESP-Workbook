@@ -5,6 +5,7 @@ import { persistStorage } from './core/db';
 import { loadAllDocStores } from './core/docstore';
 import './timeline/model';
 import './meetings/model';
+import './money/model';
 import { autoStartCloud } from './ui/cloudCard';
 import './styles.css';
 

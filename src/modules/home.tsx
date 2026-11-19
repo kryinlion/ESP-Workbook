@@ -6,6 +6,8 @@ import { MODULES } from './registry';
 import { Hero } from '../ui/hero';
 import { openBackup, backupEveryDays } from '../ui/backupPrompt';
 import { ReenterCard } from '../ui/cloudCard';
+import { moneyStore, totals } from '../money/model';
+import { money } from '../ui/fields';
 import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus, timeline, todayIso } from '../timeline/model';
 
 export function Home() {
@@ -58,6 +60,8 @@ export function Home() {
         })}
       </div>
 
+      <MoneyCard />
+
       <a href="#/decks" class="card deck-link">
         <span class="ti">▶</span>
         <span><b>Presentations</b><small>Proposal, progress update, and project report — PowerPoint or PDF</small></span>
@@ -72,12 +76,16 @@ export function Home() {
         </>
       )}
 
-      <h2 class="h2">Coming next</h2>
-      <div class="soon-list">
-        {MODULES.filter((m) => m.phase).sort((a, b) => a.phase! - b.phase!).map((m) => (
-          <a href={`#/${m.id}`} class="soon-item"><span class="ti">{m.icon}</span><span><b>{m.title}</b><small>{m.blurb}</small></span></a>
-        ))}
-      </div>
+      {MODULES.some((m) => m.phase) && (
+        <>
+          <h2 class="h2">Coming next</h2>
+          <div class="soon-list">
+            {MODULES.filter((m) => m.phase).sort((a, b) => a.phase! - b.phase!).map((m) => (
+              <a href={`#/${m.id}`} class="soon-item"><span class="ti">{m.icon}</span><span><b>{m.title}</b><small>{m.blurb}</small></span></a>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -109,5 +117,23 @@ function DueSoon() {
         )}
       </div>
     </>
+  );
+}
+
+function MoneyCard() {
+  moneyStore.use();
+  const t = totals();
+  const any = t.raised || t.spent || t.inKind;
+  return (
+    <a href="#/money" class="card deck-link mn-home">
+      <span class="ti">$</span>
+      <span style={{ flex: 1 }}>
+        <b>Money</b>
+        {any || t.goal
+          ? <><small>{money(t.raised + t.inKind)} of {t.goal ? money(t.goal) : 'goal'} · spent {money(t.spent)}{t.thankYous.length ? ` · ${t.thankYous.length} thank-you${t.thankYous.length === 1 ? '' : 's'} to send` : ''}</small>
+            {t.goal > 0 && <span class="bar"><span style={{ width: `${t.pct}%` }} /></span>}</>
+          : <small>Track donations, expenses, donors, and fundraisers</small>}
+      </span>
+    </a>
   );
 }

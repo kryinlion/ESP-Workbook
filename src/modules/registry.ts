@@ -24,7 +24,7 @@ export const MODULES: ModuleDef[] = [
     features: ['Date, who attended, notes, decisions, photos', 'Action items become Timeline tasks', 'One tap: build a meetings presentation'],
   },
   {
-    id: 'money', title: 'Money', short: 'Money', icon: '$', tab: true, phase: 5,
+    id: 'money', title: 'Money', short: 'Money', icon: '$', tab: true,
     blurb: 'Track every dollar and donation from goal to receipt.',
     features: ['Donations, in-kind gifts, and expenses with receipt photos', 'Donor list and thank-you tracking', 'Fundraising goals and plans', 'Feeds the workbook cost and spending tables', 'Fundraising presentation'],
   },

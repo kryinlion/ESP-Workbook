@@ -5,13 +5,14 @@ import { mediaUrl } from '../core/media';
 import { shareOrDownload } from '../core/backup';
 import { DECKS } from '../decks/decks';
 import { allContactEmails, emailsFor, getMeeting, meetingsStore } from '../meetings/model';
+import { moneyStore } from '../money/model';
 import { CopyEmails } from '../ui/emails';
 import { FONT, LINE, W, type Prim, type Slide } from '../decks/engine';
 
 // Presentations: pick a deck → see every slide → save as PowerPoint or PDF.
 export function Decks({ deckId, arg }: { deckId?: string; arg?: string }) {
   const p = useProject();
-  timeline.use(); meetingsStore.use();
+  timeline.use(); meetingsStore.use(); moneyStore.use();
   const def = DECKS.find((d) => d.id === deckId);
   if (!def) {
     return (
@@ -38,8 +39,8 @@ export function Decks({ deckId, arg }: { deckId?: string; arg?: string }) {
 function DeckView({ id, arg }: { id: string; arg?: string }) {
   const p = useProject();
   const def = DECKS.find((d) => d.id === id)!;
-  meetingsStore.use();
-  const deck = useMemo(() => def.build(p.values, arg), [p.values, timeline.get(), meetingsStore.get(), id, arg]);
+  meetingsStore.use(); moneyStore.use();
+  const deck = useMemo(() => def.build(p.values, arg), [p.values, timeline.get(), meetingsStore.get(), moneyStore.get(), id, arg]);
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
   const save = (kind: 'pptx' | 'pdf' | 'handout') => async () => {

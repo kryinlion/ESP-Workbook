@@ -123,7 +123,7 @@ export function ReenterCard() {
       <b>Re-enter these private details</b>
       <span>They were kept off the cloud for privacy. Each one disappears from this list once it's filled in.</span>
       <ul>
-        {left.slice(0, 8).map((id) => <li><a class="lnk" href={`#/workbook/${SECTION_OF[id] || 'contacts'}`}>{labelOf(id)}</a></li>)}
+        {left.slice(0, 8).map((id) => <li><a class="lnk" href={id === 'money.donorContacts' ? '#/money/donors' : `#/workbook/${SECTION_OF[id] || 'contacts'}`}>{labelOf(id)}</a></li>)}
       </ul>
       {left.length > 8 && <span>+ {left.length - 8} more</span>}
       <button type="button" class="lnk-btn" onClick={() => setMeta({ reenter: [] })}>Dismiss list</button>

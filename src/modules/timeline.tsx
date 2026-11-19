@@ -276,7 +276,7 @@ function ItemSheet({ it, onClose }: { it: Item; onClose: () => void }) {
           ? <input class="inp title-inp" value={it.title} onInput={(e: any) => upd({ title: e.target.value })} />
           : <h3 class="sheet-title">{it.title}</h3>}
         {it.href && ms ? (
-          <a class="btn wide" href={it.href} onClick={onClose}>Open meeting →</a>
+          <a class="btn wide" href={it.href} onClick={onClose}>{it.href.includes('meetings') ? 'Open meeting →' : 'Open fundraiser →'}</a>
         ) : ms ? (
           it.hard
             ? <p class="muted">Set from your birth date on the Contacts page. This is the one deadline that can't move.</p>

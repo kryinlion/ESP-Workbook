@@ -1,5 +1,5 @@
 // Privacy test: protected data never reaches the cloud copy, and restore never overwrites real values.
-import { scrubValues, mergeRestore, PLACEHOLDER, PROTECTED_TEXT, SIG_FIELDS, isReentered } from '../src/cloud/scrub';
+import { scrubValues, mergeRestore, PLACEHOLDER, PROTECTED_TEXT, SIG_FIELDS, isReentered, scrubMoney, mergeMoney } from '../src/cloud/scrub';
 
 let pass = 0, fail = 0;
 const ok = (name: string, c: boolean) => { c ? pass++ : fail++; console.log(c ? '  ✓' : '  ✗', name); };
@@ -39,5 +39,17 @@ ok('new device: signature listed to re-enter', fresh.reenter.includes('appr.cand
 ok('new device: answers restored', fresh.values['prop.work'] === 'Build a bridge');
 ok('new device: signature date kept', fresh.values['appr.candSig'].date === '2026-11-19');
 ok('re-entered check works', isReentered('cand.fullName', { 'cand.fullName': 'X' }) && !isReentered('cand.fullName', {}));
+
+// Money: donor names stay, contact details don't
+const money = { schema: 1, donors: [{ id: 'd1', name: 'Commerce Lumber', email: 'sales@lumber.example', phone: '555-0199', address: '9 Mill Rd' }], donations: [{ id: 'g1', donorId: 'd1', amount: '120' }], expenses: [], events: [] };
+const mc = JSON.stringify(scrubMoney(money));
+ok('money cloud copy keeps donor name', mc.includes('Commerce Lumber'));
+ok('money cloud copy has no donor email/phone/address', !mc.includes('sales@lumber') && !mc.includes('555-0199') && !mc.includes('9 Mill Rd'));
+ok('money cloud copy keeps amounts', mc.includes('"amount":"120"'));
+ok('scrubMoney does not change the device copy', money.donors[0].email === 'sales@lumber.example');
+const mSame = mergeMoney(scrubMoney(money), money);
+ok('money restore on same device keeps contact details', mSame.doc.donors[0].phone === '555-0199' && !mSame.reenter);
+const mNew = mergeMoney(scrubMoney(money), undefined);
+ok('money restore on new device: blank + re-enter flag', !JSON.stringify(mNew.doc).includes(PLACEHOLDER) && mNew.reenter);
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

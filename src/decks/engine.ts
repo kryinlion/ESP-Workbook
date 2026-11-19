@@ -51,7 +51,11 @@ export const textHeight = (lines: number, size: number) => (lines * size * LINE)
 
 /** Largest size in [min,max] where the text fits the box; null if it doesn't fit even at min. */
 export function fitSize(text: string, w: number, h: number, max: number, min: number, bold = false): number | null {
-  for (let s = max; s >= min; s -= 1) if (textHeight(wrap(text, s, w, bold).length, s) <= h) return s;
+  for (let s = max; s >= min; s -= 1) {
+    const lines = wrap(text, s, w, bold);
+    // a single word wider than the box (e.g. "$565.00") also means "too big"
+    if (textHeight(lines.length, s) <= h && lines.every((l) => measure(l, s, bold) <= w)) return s;
+  }
   return null;
 }
 
