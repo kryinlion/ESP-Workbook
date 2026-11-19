@@ -43,6 +43,7 @@ function ink(text: string, size: number, font = FONT, weight = '400'): Ink {
 }
 
 interface Layout {
+  W0: number; // stack width the ring position is anchored to
   W: number; H: number; D: number; gap: number; stackX: number;
   words: { text: string; size: number; y: number; letters: { ch: string; x: number }[] }[];
   label: { size: number };
@@ -52,6 +53,7 @@ function compute(inner: number): Layout {
   const LINE_GAP = 0.16; // gap between words, as a fraction of PROJECT cap height
   const COL_GAP = 25; // space between ring and stack
   const SCALE = 0.9; // Mark: dial both back ~10% from full-width fit
+  const STACK_SCALE = 0.81; // Mark: stack 2 × ~10% smaller; ring stays put
   // unit stack: PROJECT ink width = 1
   const p1 = ink('PROJECT', 100);
   const sP = 100 / p1.width; // size where PROJECT ink width = 1
@@ -64,10 +66,12 @@ function compute(inner: number): Layout {
   const H1 = stackHeight(100, sP, sE, hP, hE, LINE_GAP), H2 = stackHeight(200, sP, sE, hP, hE, LINE_GAP);
   const k = (H2 - H1) / 100, h0 = H1 - 100 * k;
   const W = Math.max(80, Math.min((inner - COL_GAP - h0) / (1 + k), 340)) * SCALE;
-  const words = layoutWords(W, sP, sE, LINE_GAP);
+  const D = layoutWords(W, sP, sE, LINE_GAP).h; // ring keeps the size it had
+  const Ws = W * STACK_SCALE;
+  const words = layoutWords(Ws, sP, sE, LINE_GAP);
   const H = words.h;
   // ring sits left; stack hugs the right edge
-  return { W, H, D: H, gap: COL_GAP, stackX: inner - W, words: words.list, label: { size: fitLabel(inner) } };
+  return { W0: W, W: Ws, H, D, gap: COL_GAP, stackX: inner - Ws, words: words.list, label: { size: fitLabel(inner) } };
 }
 
 function stackHeight(W: number, sP: number, sE: number, hP: number, hE: number, gap: number) {
@@ -136,7 +140,7 @@ export function Hero({ pct, done, total, below }: { pct: number; done: number; t
       <div class="hero2-in" ref={box}>
         <span class="hero-label" style={{ fontSize: L ? `${L.label.size}px` : '11px' }}>Eagle Scout Leadership Service Project</span>
         {L && (
-          <div class="hero-row" style={{ height: `${L.H}px`, gap: `${L.gap}px` }}>
+          <div class="hero-row" style={{ height: `${L.D}px`, gap: `${L.gap}px`, paddingLeft: `${Math.max(0, (inner - (L.D + L.gap + L.W0)) / 2)}px` }}>
             <Ring pct={pct} d={L.D} />
             <svg class="stack" width={L.W} height={L.H} viewBox={`0 0 ${L.W} ${L.H}`} aria-label="Your Eagle Project" role="img">
               {L.words.map((w, i) => (
