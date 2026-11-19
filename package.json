@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host",
     "test:pdf": "rolldown scripts/test-pdf.ts --platform node --format esm -o scripts/out/test-pdf.mjs && node scripts/out/test-pdf.mjs",
-    "test:rules": "JAVA_HOME=$(brew --prefix openjdk@21) PATH=$(brew --prefix openjdk@21)/bin:$PATH firebase emulators:exec --project demo-esp --only firestore,storage \"node scripts/rules-test.mjs\"",
+    "test:rules": "firebase emulators:exec --project demo-esp --only firestore,storage \"node scripts/rules-test.mjs\"",
     "test:scrub": "rolldown scripts/scrub-test.ts --platform node --format esm -o scripts/out/scrub-test.mjs && node scripts/out/scrub-test.mjs"
   },
   "dependencies": {

@@ -21,10 +21,10 @@ Workflow: Claude commits locally → Mark pushes with GitHub Desktop → GitHub 
   storage separate from Safari, so a link tapped in Mail would sign in Safari, not the app.
 - P6a built 2026-11-19 (`src/cloud/`, `src/ui/cloudCard.tsx`): sign-in card on Export, auto backup every ~3 min
   when changed + on leaving the app, restore with "Re-enter these" card on Home. Tests: `npm run test:scrub`
-  (privacy, 27 checks ✓); `npm run test:rules` (emulator, needs Java — not run yet).
+  (privacy, 27 checks ✓); `npm run test:rules` (emulator, 20 checks ✓ 2026-11-19; Java = Temurin 21).
 - ⏭ Remaining: (1) Mark pastes `firestore.rules` + `storage.rules` into Console → Publish; (2) push; (3) Colin
   creates his account in the app; (4) then Auth → Settings → User actions → **turn off "Enable create (sign-up)"**
-  so nobody else can make accounts on our project; (5) run the rules test once Java is available.
+  so nobody else can make accounts on our project; Rules published + live signed-out checks refused (403) 2026-11-19.
 - Billing: Google Cloud **free trial** ($300 credit, 90 days). ⏰ **Before ~2027-02-10**, Mark activates the full
   pay-as-you-go account (Cloud Billing → Activate) or backups/photo storage stop when the trial ends (~2027-02-17).
   Usage should stay inside the always-free tier (≈$0/mo). $1 budget alert: Cloud Billing → Budgets & alerts.
