@@ -355,3 +355,11 @@ button { font: inherit; color: inherit; }
 .bk-err { color: var(--danger); font-size: 13px; }
 .bk-later { margin-top: 10px; background: none; border: 0; color: var(--muted); font-size: 15px; padding: 10px 20px; cursor: pointer; }
 .bk-card { text-align: left; width: 100%; font: inherit; color: inherit; cursor: pointer; }
+
+/* ---------- cloud backup (P6a) ---------- */
+.lnk-btn { background: none; border: 0; padding: 8px 0; color: var(--green); font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; text-align: left; }
+.cloud-links { justify-content: space-between; margin-top: 6px; }
+.cloud-on { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; font-size: 15px; overflow-wrap: anywhere; }
+.cloud-on .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 25%, transparent); flex: none; }
+.reenter ul { margin: 6px 0 0; padding-left: 20px; }
+.reenter li { margin: 3px 0; font-size: 14.5px; }

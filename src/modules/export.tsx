@@ -3,6 +3,7 @@ import { project, useProject, flush } from '../core/store';
 import { clearAll, getMedia } from '../core/db';
 import { restoreBackup, shareOrDownload } from '../core/backup';
 import { openBackup } from '../ui/backupPrompt';
+import { CloudCard } from '../ui/cloudCard';
 
 const safe = (s: string) => (s || '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40);
 
@@ -51,8 +52,10 @@ export function ExportScreen() {
         <a class="btn ghost wide" href="#/decks">See what's planned</a>
       </section>
 
+      <CloudCard />
+
       <section class="card">
-        <h2>Backup</h2>
+        <h2>Backup file</h2>
         <p class="intro">Your work saves on this device automatically as you type. A backup is one file with everything, photos included. Save it to <b>iCloud Drive</b> or <b>Files</b>, or AirDrop it to your iPad and tap Restore there.</p>
         <p class="muted">{days === null ? 'No backup saved yet.' : days === 0 ? 'Last backup: today.' : `Last backup: ${days} day${days === 1 ? '' : 's'} ago.`}</p>
         <button class="btn wide" disabled={!!busy} onClick={openBackup}>🛡 Back up now</button>

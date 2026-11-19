@@ -3,3 +3,7 @@ dist
 .DS_Store
 *.tmp.*
 scripts/out
+.firebase
+firebase-debug.log
+firestore-debug.log
+storage-debug.log

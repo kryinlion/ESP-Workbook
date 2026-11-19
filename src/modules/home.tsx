@@ -5,6 +5,7 @@ import { isoToUs } from '../ui/fields';
 import { MODULES } from './registry';
 import { Hero } from '../ui/hero';
 import { openBackup } from '../ui/backupPrompt';
+import { ReenterCard } from '../ui/cloudCard';
 import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus, timeline, todayIso } from '../timeline/model';
 
 export function Home() {
@@ -29,6 +30,8 @@ export function Home() {
           <p class="next">{all.done} of {all.total} answers{nextStep >= 0 ? <> · <b>Next step {nextStep + 1}:</b> {CHECKLIST[nextStep]}</> : null}</p>
         </div>
       } />
+
+      <ReenterCard />
 
       {(days === null || days >= 7) && (
         <button type="button" class="card warn bk-card" onClick={openBackup}>

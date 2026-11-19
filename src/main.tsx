@@ -4,6 +4,7 @@ import { loadProject } from './core/store';
 import { persistStorage } from './core/db';
 import { loadAllDocStores } from './core/docstore';
 import './timeline/model';
+import { autoStartCloud } from './ui/cloudCard';
 import './styles.css';
 
 // Preview hooks (used by preview.html device frames):
@@ -20,4 +21,5 @@ if (frame === 'tablet') { document.documentElement.style.setProperty('--safe-t',
 Promise.all([loadProject(), loadAllDocStores()]).then(() => {
   render(<App />, document.getElementById('app')!);
   persistStorage();
+  autoStartCloud();
 });

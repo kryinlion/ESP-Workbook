@@ -7,7 +7,7 @@ export interface ProjectDoc {
   id: string;
   values: Record<string, any>;
   updatedAt: number;
-  meta: { lastBackupAt?: number; backupSnoozeUntil?: number; createdAt: number };
+  meta: { lastBackupAt?: number; backupSnoozeUntil?: number; createdAt: number; reenter?: string[] };
 }
 
 const KEY = 'project';
