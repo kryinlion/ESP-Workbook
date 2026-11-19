@@ -11,6 +11,7 @@ import '@fontsource/bebas-neue/latin-400.css';
 
 const FONT = '"Bebas Neue"';
 const PT3 = 4; // 3pt ≈ 4 CSS px
+const TABLET_GAP = 100; // Mark: iPad (wide card) gets 100px between ring and stack; phone 25px
 
 export const RANKS = [
   { name: 'Scout', at: 0 },
@@ -51,8 +52,8 @@ interface Layout {
 
 function compute(inner: number): Layout {
   const LINE_GAP = 0.16; // gap between words, as a fraction of PROJECT cap height
-  const COL_GAP = 25; // space between ring and stack
-  const SCALE = 0.9; // Mark: dial both back ~10% from full-width fit
+  const COL_GAP = 25; // space between ring and stack (phone)
+    const SCALE = 0.9; // Mark: dial both back ~10% from full-width fit
   const STACK_SCALE = 0.81; // Mark: stack 2 × ~10% smaller; ring stays put
   // unit stack: PROJECT ink width = 1
   const p1 = ink('PROJECT', 100);
@@ -129,7 +130,7 @@ export function Hero({ pct, done, total, below }: { pct: number; done: number; t
     if (box.current) ro.observe(box.current);
     return () => { alive = false; ro.disconnect(); };
   }, []);
-  useLayoutEffect(() => { if (ready && inner > 0) setL(compute(Math.min(inner, 560))); }, [ready, inner]);
+  useLayoutEffect(() => { if (ready && inner > 0) setL({ ...compute(Math.min(inner, 560)), gap: inner >= 600 ? TABLET_GAP : 25 }); }, [ready, inner]);
 
   const r = rankFor(pct);
   const next = RANKS[r + 1];
