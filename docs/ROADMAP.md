@@ -17,6 +17,8 @@ All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mar
 5. Optional: clear Mark's test answers first (Export → Erase all data on this device) on the device Colin uses —
    or restore Mark's test data only if wanted. Test account data stays separate in the cloud.
 6. First full backup file: tap **Back up now** → Save to Files → iCloud Drive.
+6b. **iPad**: Safari → kryinlion.github.io/ESP-Workbook → Share → Add to Home Screen → open from icon → Export →
+   Cloud backup → sign in with Colin's SAME email + password → wait ~30 s → type the items in "Re-enter these" once.
 7. Remind Mark: free trial → full pay-as-you-go before ~2027-02-10 (see Billing below).
 
 ## Firebase facts (set up 2026-11-19)
@@ -62,7 +64,12 @@ All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mar
   workbook money boxes filled only via **Copy into workbook** (review table → tap; Plan p.17 + Report p.21 + spending
   table); one overall goal (defaults to proposal cost estimate) + fundraising events (on Timeline); each donation has
   payment type + who holds it; thank-you tracking. Deck: Fundraising & budget. Doc store key `money` (schema 1).
-- **P6b Sync** iPhone ⇄ iPad on the same Firebase foundation (protected fields entered once per device).
+- **P6b Sync** ✅ 2026-11-19 — iPhone ⇄ iPad via Firestore `users/{uid}/entries/{key}` (`src/cloud/sync.ts`,
+  merge logic `src/cloud/syncMerge.ts`). Change-level 3-way merge (per answer / task / meeting / donation…), every
+  ~30 s while open + on open/close; photos sync via Storage. Same-field conflict → the device syncing last wins, both
+  converge. Protected fields + signatures + donor contact info NEVER sync; only a "pk:" flag so a new device shows
+  "Re-enter these". Device bookkeeping in IndexedDB key `_sync` (keys starting `_` are excluded from all backups).
+  Tests: `npm run test:sync` (20 ✓), rules 23 ✓, two-device E2E on local emulators ✓ (`?emu` on localhost only).
 - **P7 Native** (Capacitor, TestFlight).
 - **First update phase / last phase — Multi-Scout ("bring your own backup")**: let other Scouts use the app
   with a backup destination of their choice at setup (their own Firebase/Supabase project, Google Drive,

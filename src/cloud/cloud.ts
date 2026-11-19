@@ -11,8 +11,10 @@ import {
   initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut as fbSignOut, type User,
 } from 'firebase/auth';
-import { getStorage, ref, uploadBytes, getBytes, listAll } from 'firebase/storage';
-import { getFirestore, doc as fsDoc, setDoc } from 'firebase/firestore/lite';
+import { getStorage, ref, uploadBytes, getBytes, listAll, connectStorageEmulator } from 'firebase/storage';
+import { getFirestore, doc as fsDoc, setDoc, connectFirestoreEmulator } from 'firebase/firestore/lite';
+import { connectAuthEmulator } from 'firebase/auth';
+import { createSync, type SyncStatus } from './sync';
 import { firebaseConfig } from './config';
 import { scrubValues, mergeRestore, scrubMoney, mergeMoney, DONOR_REENTER } from './scrub';
 import { allDocs, allMedia, putDoc, putMedia } from '../core/db';
@@ -23,6 +25,12 @@ const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] });
 const storage = getStorage(app);
 const fs = getFirestore(app);
+// Local test mode: ?emu on localhost talks to the Firebase emulators (never the real project).
+if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).has('emu')) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+  connectFirestoreEmulator(fs, '127.0.0.1', 8080);
+  connectStorageEmulator(storage, '127.0.0.1', 9199);
+}
 
 export interface CloudState {
   ready: boolean;          // auth state known
@@ -30,22 +38,33 @@ export interface CloudState {
   busy: '' | 'backup' | 'restore';
   lastAt: number | null;   // last successful cloud backup (this device)
   error: string;
+  sync: SyncStatus;
 }
 const LS = 'esp.cloud';
 const saved = (() => { try { return JSON.parse(localStorage.getItem(LS) || '{}'); } catch { return {}; } })();
-let state: CloudState = { ready: false, email: null, busy: '', lastAt: saved.lastAt ?? null, error: '' };
+let state: CloudState = { ready: false, email: null, busy: '', lastAt: saved.lastAt ?? null, error: '', sync: { on: false, running: false, lastAt: null, error: '', pulled: 0, pushed: 0 } };
 const subs = new Set<() => void>();
 const set = (p: Partial<CloudState>) => { state = { ...state, ...p }; subs.forEach((f) => f()); };
 export const cloudState = () => state;
 export function subscribeCloud(f: () => void) { subs.add(f); return () => { subs.delete(f); }; }
 const persist = (p: Record<string, any>) => { try { localStorage.setItem(LS, JSON.stringify({ ...JSON.parse(localStorage.getItem(LS) || '{}'), ...p })); } catch { /* private mode */ } };
 
+// ---------- sync (iPhone ⇄ iPad) ----------
+const syncer = createSync(fs, storage, (p) => set({ sync: { ...state.sync, ...p } }));
+export const syncPaused = () => !!JSON.parse(localStorage.getItem(LS) || '{}').syncPaused;
+export function setSyncPaused(paused: boolean) {
+  persist({ syncPaused: paused });
+  if (paused) syncer.stop(); else if (user) syncer.start(user.uid);
+}
+export const syncNow = () => syncer.now();
+
 let user: User | null = null;
 onAuthStateChanged(auth, (u) => {
   user = u;
   set({ ready: true, email: u?.email ?? null });
   persist({ on: !!u });
-  if (u) schedule(4000);
+  if (u) { schedule(4000); if (!syncPaused()) syncer.start(u.uid); }
+  else syncer.stop();
 });
 
 // ---------- account ----------

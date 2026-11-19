@@ -61,7 +61,7 @@ function SignIn({ c }: { c: Cloud }) {
   };
   return (
     <form onSubmit={go}>
-      <p class="intro">Sign in once and your project backs itself up to the cloud automatically while you work, photos included. Your name, address, phone numbers, other people's contact details, and signatures stay only on this device.</p>
+      <p class="intro">Sign in once and your project backs itself up to the cloud automatically while you work, photos included. Sign in with the same account on your iPad and iPhone and they stay in sync. Your name, address, phone numbers, other people's contact details, and signatures stay only on this device.</p>
       <div class="cell"><span class="clbl">Email</span>
         <input class="inp" type="email" autoComplete="username" autoCapitalize="off" value={email} onInput={(e: any) => setEmail(e.target.value)} required />
       </div>
@@ -90,6 +90,7 @@ function SignedIn({ c }: { c: Cloud }) {
   return (
     <>
       <p class="cloud-on"><span class="dot" /> On · <b>{s.email}</b></p>
+      <SyncBox c={c} />
       <p class="muted">{s.busy === 'backup' ? 'Backing up…' : `Last cloud backup: ${ago(s.lastAt)}. It backs up by itself every few minutes while you work. Private details (names, addresses, phones, signatures) stay off the cloud.`}</p>
       <button class="btn wide" disabled={!!s.busy} onClick={backup}>{s.busy === 'backup' ? 'Backing up…' : '☁ Back up to cloud now'}</button>
       {!ask && <button class="btn ghost wide" disabled={!!s.busy} onClick={check}>⟲ Restore from cloud…</button>}
@@ -106,6 +107,24 @@ function SignedIn({ c }: { c: Cloud }) {
       {msg && <p class="toast">{msg}</p>}
       <button type="button" class="lnk-btn" onClick={() => c.signOut().catch(() => {})}>Sign out of cloud backup</button>
     </>
+  );
+}
+
+function SyncBox({ c }: { c: Cloud }) {
+  const y = c.cloudState().sync;
+  const paused = c.syncPaused();
+  return (
+    <div class="sync-box">
+      <p class="sync-line">
+        <span class={`dot ${paused ? 'off' : y.error ? 'bad' : ''}`} />
+        <b>{paused ? 'Sync paused' : 'Syncs with your other devices'}</b>
+      </p>
+      {!paused && <p class="muted" style={{ margin: '2px 0 6px' }}>{y.running ? 'Syncing…' : y.error ? `Couldn’t sync (${y.error}). It will try again.` : `Last synced ${ago(y.lastAt)}.`} Sign in with this same account on your iPhone or iPad.</p>}
+      <div class="row-btns" style={{ marginTop: '4px' }}>
+        {!paused && <button type="button" class="btn ghost small" disabled={y.running} onClick={() => c.syncNow()}>⟳ Sync now</button>}
+        <button type="button" class="lnk-btn" onClick={() => c.setSyncPaused(!paused)}>{paused ? 'Turn sync back on' : 'Pause sync'}</button>
+      </div>
+    </div>
   );
 }
 

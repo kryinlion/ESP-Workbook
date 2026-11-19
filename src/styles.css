@@ -451,3 +451,8 @@ a.btn.disabled { opacity: .55; pointer-events: none; }
 .area.short { min-height: 70px; }
 select.inp { appearance: none; -webkit-appearance: none; }
 .mn-home .bar { display: block; margin-top: 6px; }
+.sync-box { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 8px 0 12px; background: var(--field); }
+.sync-line { display: flex; align-items: center; gap: 8px; margin: 0; }
+.sync-line .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex: none; }
+.sync-line .dot.off { background: var(--muted); }
+.sync-line .dot.bad { background: var(--danger); }

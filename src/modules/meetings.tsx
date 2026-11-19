@@ -109,6 +109,7 @@ function MeetingEdit({ m }: { m: Meeting }) {
       <section class="card">
         <h3>Notes</h3>
         <textarea class="inp area tall" value={m.notes || ''} placeholder="What was discussed, advice you got, ideas…" onInput={(e: any) => up({ notes: e.target.value })} />
+        <p class="hint">Tip: write "my coach" or first names here, not full names or phone numbers. Notes sync to your other devices and the cloud backup; Contacts details stay private.</p>
       </section>
 
       <section class="card">

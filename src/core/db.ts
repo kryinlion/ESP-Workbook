@@ -22,7 +22,8 @@ export async function getDoc<T>(key: string): Promise<T | undefined> { return (a
 export async function putDoc(key: string, val: unknown) { return (await db()).put('docs', val, key); }
 export async function allDocs(): Promise<Record<string, unknown>> {
   const d = await db(); const keys = await d.getAllKeys('docs'); const out: Record<string, unknown> = {};
-  for (const k of keys) out[String(k)] = await d.get('docs', k);
+  // keys starting with '_' are device bookkeeping (e.g. sync state) — never part of a backup
+  for (const k of keys) if (!String(k).startsWith('_')) out[String(k)] = await d.get('docs', k);
   return out;
 }
 export async function getMedia(id: string): Promise<MediaRec | undefined> { return (await db()).get('media', id); }

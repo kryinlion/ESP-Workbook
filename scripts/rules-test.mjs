@@ -30,6 +30,10 @@ await t('signed-out cannot read', assertFails(getDoc(doc(anon.firestore(), 'user
 await t('signed-out cannot write', assertFails(setDoc(doc(anon.firestore(), 'users/colin'), { evil: 1 })));
 await t('nobody can write outside users/', assertFails(setDoc(doc(colin.firestore(), 'public/x'), { a: 1 })));
 
+await t('owner can write a sync entry', assertSucceeds(setDoc(doc(colin.firestore(), 'users/colin/entries/p%3Aproject.title'), { k: 'p:project.title', v: '"x"' })));
+await t('stranger cannot read Colin sync entries', assertFails(getDoc(doc(other.firestore(), 'users/colin/entries/p%3Aproject.title'))));
+await t('stranger cannot write Colin sync entries', assertFails(setDoc(doc(other.firestore(), 'users/colin/entries/evil'), { k: 'evil' })));
+
 console.log('Storage');
 const cs = colin.storage(), os = other.storage(), as = anon.storage();
 await t('owner can upload backup json', assertSucceeds(uploadBytes(ref(cs, 'users/colin/backup/latest.json'), json({ a: 1 }), J)));
