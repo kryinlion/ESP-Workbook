@@ -2,14 +2,16 @@ import { useEffect, useState } from 'preact/hooks';
 import { makeBackup } from '../core/backup';
 import { project, setMeta, useProject } from '../core/store';
 import { overallProgress } from '../workbook/progress';
+import { cloudOn } from './cloudCard';
 
 // One-button weekly backup.
 // The backup file is packed the moment the screen opens, so the single tap goes
 // straight to the iPhone/iPad share sheet (iOS only allows the share sheet right
 // after a tap). In the share sheet he picks "Save to Files" → iCloud Drive.
 
-const WEEK = 7 * 864e5;
 const DAY = 864e5;
+/** Weekly; monthly once cloud backup is on (the cloud covers day-to-day, this file is the complete copy). */
+export const backupEveryDays = () => (cloudOn() ? 30 : 7);
 
 let openFlag = false;
 const subs = new Set<() => void>();
@@ -21,7 +23,7 @@ export function backupDue(): boolean {
   if (overallProgress(p.values).done === 0) return false; // nothing to protect yet
   const last = p.meta.lastBackupAt || p.meta.createdAt;
   const snooze = p.meta.backupSnoozeUntil || 0;
-  return Date.now() - last >= WEEK && Date.now() >= snooze;
+  return Date.now() - last >= backupEveryDays() * DAY && Date.now() >= snooze;
 }
 
 export function BackupPrompt() {
@@ -88,6 +90,7 @@ function Sheet({ last }: { last?: number }) {
             <button type="button" class="bk-go" disabled={state !== 'ready'} onClick={go}>
               {state === 'packing' ? 'Getting ready…' : 'Back up now'}
             </button>
+            {cloudOn() && <p class="bk-sub">Your cloud backup leaves out private details. This file keeps everything.</p>}
             <p class="bk-hint">Then tap <b>Save to Files</b> → <b>iCloud Drive</b> → <b>Save</b>.</p>
             {state === 'error' && <p class="bk-err">Something went wrong: {err}</p>}
             <button type="button" class="bk-later" onClick={later}>Not now</button>

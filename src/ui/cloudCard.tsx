@@ -7,9 +7,14 @@ type Cloud = typeof import('../cloud/cloud');
 let mod: Promise<Cloud> | null = null;
 export const loadCloud = () => (mod ??= import('../cloud/cloud'));
 
+/** True once this device has signed in to cloud backup. */
+export function cloudOn(): boolean {
+  try { return !!JSON.parse(localStorage.getItem('esp.cloud') || '{}').on; } catch { return false; }
+}
+
 /** Start automatic cloud backup on launch if this device signed in before (keeps Firebase off the first paint). */
 export function autoStartCloud() {
-  try { if (JSON.parse(localStorage.getItem('esp.cloud') || '{}').on) loadCloud(); } catch { /* ignore */ }
+  if (cloudOn()) loadCloud();
 }
 
 const ago = (t: number | null) => {
@@ -28,12 +33,12 @@ export function CloudCard() {
   const [, tick] = useState(0);
   useEffect(() => { loadCloud().then((m) => { setC(m); m.subscribeCloud(() => tick((n) => n + 1)); }); }, []);
   if (!c || !c.cloudState().ready) {
-    return <section class="card"><h2>☁ Cloud backup</h2><p class="muted">Loading…</p></section>;
+    return <section class="card"><h2>☁ Cloud backup <small class="h2-tag">automatic</small></h2><p class="muted">Loading…</p></section>;
   }
   const s = c.cloudState();
   return (
     <section class="card cloud">
-      <h2>☁ Cloud backup</h2>
+      <h2>☁ Cloud backup <small class="h2-tag">automatic</small></h2>
       {s.email ? <SignedIn c={c} /> : <SignIn c={c} />}
       {s.error && <p class="toast bad">⚠️ {s.error}</p>}
     </section>
@@ -85,7 +90,7 @@ function SignedIn({ c }: { c: Cloud }) {
   return (
     <>
       <p class="cloud-on"><span class="dot" /> On · <b>{s.email}</b></p>
-      <p class="muted">{s.busy === 'backup' ? 'Backing up…' : `Last cloud backup: ${ago(s.lastAt)}. It backs up by itself every few minutes while you work.`}</p>
+      <p class="muted">{s.busy === 'backup' ? 'Backing up…' : `Last cloud backup: ${ago(s.lastAt)}. It backs up by itself every few minutes while you work. Private details (names, addresses, phones, signatures) stay off the cloud.`}</p>
       <button class="btn wide" disabled={!!s.busy} onClick={backup}>{s.busy === 'backup' ? 'Backing up…' : '☁ Back up to cloud now'}</button>
       {!ask && <button class="btn ghost wide" disabled={!!s.busy} onClick={check}>⟲ Restore from cloud…</button>}
       {ask === 'none' && <p class="muted">There's no cloud backup yet for this account.</p>}
