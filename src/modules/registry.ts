@@ -29,7 +29,7 @@ export const MODULES: ModuleDef[] = [
     features: ['Donations, in-kind gifts, and expenses with receipt photos', 'Donor list and thank-you tracking', 'Fundraising goals and plans', 'Feeds the workbook cost and spending tables', 'Fundraising presentation'],
   },
   {
-    id: 'decks', title: 'Presentations', short: 'Decks', icon: '▶', tab: false, phase: 3,
+    id: 'decks', title: 'Presentations', short: 'Decks', icon: '▶', tab: false,
     blurb: 'Turn your entries and photos into PowerPoint or PDF presentations.',
     features: ['Workbook summary deck', 'Progress update deck', 'Save decks and re-export anytime'],
   },

@@ -364,3 +364,22 @@ button { font: inherit; color: inherit; }
 .reenter ul { margin: 6px 0 0; padding-left: 20px; }
 .reenter li { margin: 3px 0; font-size: 14.5px; }
 .h2-tag { font-size: 12.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-left: 4px; white-space: nowrap; }
+
+/* ---------- presentations (P3) ---------- */
+.deck-pick { display: block; }
+.deck-pick h2 { margin: 2px 0 4px; }
+.deck-when { font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
+.deck-n { font-weight: 650; color: var(--green); font-size: 14.5px; }
+.deck-actions { display: flex; gap: 8px; }
+.deck-actions .btn { flex: 1; }
+.slides { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 14px; }
+@media (min-width: 700px) { .slides { grid-template-columns: 1fr 1fr; } }
+.slide-wrap { margin: 0; }
+.slide { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.18); }
+.slide .sp { position: absolute; display: block; }
+.slide .st { display: flex; flex-direction: column; white-space: pre-wrap; overflow-wrap: break-word; overflow: hidden; }
+.slide-wrap figcaption { text-align: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.deck-link { display: flex; gap: 12px; align-items: center; margin-top: 14px; }
+.deck-link .ti { font-size: 22px; color: var(--gold); width: 28px; text-align: center; }
+.deck-link b { display: block; }
+.deck-link small { color: var(--muted); font-size: 13.5px; }

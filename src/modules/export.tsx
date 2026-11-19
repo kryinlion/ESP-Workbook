@@ -48,8 +48,8 @@ export function ExportScreen() {
 
       <section class="card">
         <h2>Presentations</h2>
-        <p class="intro">PowerPoint and PDF slide decks from your entries and photos are coming in build phase 3.</p>
-        <a class="btn ghost wide" href="#/decks">See what's planned</a>
+        <p class="intro">Slide decks built from your answers and photos: proposal, progress update, and final report. Save as PowerPoint or PDF.</p>
+        <a class="btn wide" href="#/decks">▶ Open presentations</a>
       </section>
 
       <CloudCard />

@@ -58,6 +58,11 @@ export function Home() {
         })}
       </div>
 
+      <a href="#/decks" class="card deck-link">
+        <span class="ti">▶</span>
+        <span><b>Presentations</b><small>Proposal, progress update, and project report — PowerPoint or PDF</small></span>
+      </a>
+
       {dates.length > 0 && (
         <>
           <h2 class="h2">Key dates</h2>
