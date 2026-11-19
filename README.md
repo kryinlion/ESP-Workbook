@@ -36,6 +36,8 @@ No personal data is in this repo — everything the Scout types lives only on hi
 | `src/core/backup.ts` | Zip export/import of all docs + media. |
 | `src/modules/registry.ts` | Module list (tabs). Add a module = registry entry + screen. |
 
+**Roadmap, decisions, update-safety rules and the RESUME HERE checklist: [`docs/ROADMAP.md`](docs/ROADMAP.md).**
+
 ### Build phases
 - **P0 Foundation** ✅ shell, storage, images, backup, PWA
 - **P1 Workbook** ✅ all fields + official PDF
