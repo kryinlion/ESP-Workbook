@@ -3,16 +3,21 @@
 Live app: https://kryinlion.github.io/ESP-Workbook/ · Desktop device preview: `/preview.html`
 Workflow: Claude commits locally → Mark pushes with GitHub Desktop → GitHub Actions deploys Pages.
 
-## ▶ RESUME HERE (next session: Firebase setup, evening of 2026-11-19)
-1. **Mark creates the Firebase account** (Claude guides screen by screen; Claude never enters credentials):
-   - console.firebase.google.com → Add project `esp-eagle` (Google Analytics: off).
-   - Upgrade to **Blaze (pay-as-you-go)** if Cloud Storage requires it → immediately set a **$1 budget alert**
-     (Google Cloud Billing → Budgets & alerts).
-   - Enable **Authentication → Email link (passwordless)**; add `kryinlion.github.io` to Authorized domains.
-   - Create **Firestore** (production mode) + **Cloud Storage**, same region.
-   - Register a **Web app** → copy the `firebaseConfig` (public by design; safe in the repo).
-2. Claude writes **security rules** (each user can read/write only `users/{uid}/…`), tests them with the
-   emulator / rules playground BEFORE any real data, then builds the cloud backup (P6a below).
+## ▶ RESUME HERE
+Firebase + P6a cloud backup are DONE (2026-11-19). Colin does NOT use the app until Mark says it's fully built.
+Next build phases: P3 Presentations · P4 Advisor meetings · P5 Money (pick with Mark).
+
+## 🚀 Colin launch checklist (Mark will ask for this when building is complete)
+1. **Sign-ups off** (do now if not done): Firebase → Authentication → Settings → User actions →
+   untick **Enable create (sign-up)** → Save. Mark's own test account keeps working.
+2. **Add Colin**: Authentication → Users → **Add user** → Colin's email + any temporary password (no need to share it).
+3. On Colin's iPhone: Safari → kryinlion.github.io/ESP-Workbook → Share → **Add to Home Screen**; always open from the icon.
+4. In the app: **Export → Cloud backup** → Colin types his email → **Forgot password?** → he sets his OWN password
+   from the email → signs in. (Neither Mark nor Claude ever knows it.)
+5. Optional: clear Mark's test answers first (Export → Erase all data on this device) on the device Colin uses —
+   or restore Mark's test data only if wanted. Test account data stays separate in the cloud.
+6. First full backup file: tap **Back up now** → Save to Files → iCloud Drive.
+7. Remind Mark: free trial → full pay-as-you-go before ~2027-02-10 (see Billing below).
 
 ## Firebase facts (set up 2026-11-19)
 - Project: "Eagle Scout Project", ID `eagle-scout-project-beaa1`. Region: **us-central1 (Iowa)** — Firestore + Storage.
@@ -22,9 +27,8 @@ Workflow: Claude commits locally → Mark pushes with GitHub Desktop → GitHub 
 - P6a built 2026-11-19 (`src/cloud/`, `src/ui/cloudCard.tsx`): sign-in card on Export, auto backup every ~3 min
   when changed + on leaving the app, restore with "Re-enter these" card on Home. Tests: `npm run test:scrub`
   (privacy, 27 checks ✓); `npm run test:rules` (emulator, 20 checks ✓ 2026-11-19; Java = Temurin 21).
-- ⏭ Remaining: (1) Mark pastes `firestore.rules` + `storage.rules` into Console → Publish; (2) push; (3) Colin
-  creates his account in the app; (4) then Auth → Settings → User actions → **turn off "Enable create (sign-up)"**
-  so nobody else can make accounts on our project; Rules published + live signed-out checks refused (403) 2026-11-19.
+- Rules published in Console + live signed-out checks refused (403) 2026-11-19. Mark created his test account and
+  a cloud backup verified placeholders in `latest.json`. Colin's account: see launch checklist above.
 - Billing: Google Cloud **free trial** ($300 credit, 90 days). ⏰ **Before ~2027-02-10**, Mark activates the full
   pay-as-you-go account (Cloud Billing → Activate) or backups/photo storage stop when the trial ends (~2027-02-17).
   Usage should stay inside the always-free tier (≈$0/mo). $1 budget alert: Cloud Billing → Budgets & alerts.
