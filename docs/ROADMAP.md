@@ -51,7 +51,7 @@ Next build phases: P4 Advisor meetings · P5 Money (pick with Mark). P3 Presenta
 - **P0 Foundation** ✅ · **P1 Workbook + official PDF** ✅ · **P2 Timeline** ✅ · Weekly one-button iCloud backup ✅
 - **P6a Cloud backup (next, tonight)** — Firebase auth (email link), automatic background backup with
   placeholders, restore + "Re-enter these" list. Keeps the weekly iCloud backup as a second copy.
-- **P3 Presentations** ✅ 2026-11-19 — `src/decks/` engine (one layout → preview, PPTX via pptxgenjs, PDF via pdf-lib); decks: Proposal, Progress update, Project report; route `#/decks`
+- **P3 Presentations** ✅ 2026-11-19 — `src/decks/` engine (one layout → preview, PPTX via pptxgenjs, PDF via pdf-lib); decks: Proposal, Progress update, Project report; exports PowerPoint, PDF, and printable Handout (3 per page + note lines, ink-saving); route `#/decks`
 - **P4 Advisor meetings** · **P5 Money** (next; each will add its own deck to `DECKS`)
 - **P6b Sync** iPhone ⇄ iPad on the same Firebase foundation (protected fields entered once per device).
 - **P7 Native** (Capacitor, TestFlight).

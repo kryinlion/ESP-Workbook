@@ -371,7 +371,7 @@ button { font: inherit; color: inherit; }
 .deck-when { font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .06em; }
 .deck-n { font-weight: 650; color: var(--green); font-size: 14.5px; }
 .deck-actions { display: flex; gap: 8px; }
-.deck-actions .btn { flex: 1; }
+.deck-actions .btn { flex: 1; padding: 12px 6px; font-size: 15px; white-space: nowrap; }
 .slides { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 14px; }
 @media (min-width: 700px) { .slides { grid-template-columns: 1fr 1fr; } }
 .slide-wrap { margin: 0; }

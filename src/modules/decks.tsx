@@ -39,12 +39,14 @@ function DeckView({ id }: { id: string }) {
   const deck = useMemo(() => def.build(p.values), [p.values, timeline.get(), id]);
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
-  const save = (kind: 'pptx' | 'pdf') => async () => {
+  const save = (kind: 'pptx' | 'pdf' | 'handout') => async () => {
     setBusy(kind); setMsg('');
     try {
       await flush();
       const r = await import('../decks/render');
-      const f = kind === 'pptx' ? await r.toPptx(deck) : await r.toPdf(deck);
+      const v = p.values;
+      const f = kind === 'pptx' ? await r.toPptx(deck) : kind === 'pdf' ? await r.toPdf(deck)
+        : await r.toHandout(deck, { title: v['project.title'] || 'Eagle Scout Project', sub: v['cand.fullName'] || '' });
       const res = await shareOrDownload(f);
       if (res !== 'cancelled') setMsg(`✓ ${f.name} ready`);
     } catch (e: any) { console.error(e); setMsg(`⚠️ ${e.message || e}`); }
@@ -58,8 +60,9 @@ function DeckView({ id }: { id: string }) {
       <div class="deck-actions">
         <button class="btn" disabled={!!busy} onClick={save('pptx')}>{busy === 'pptx' ? 'Building…' : '▶ PowerPoint'}</button>
         <button class="btn ghost" disabled={!!busy} onClick={save('pdf')}>{busy === 'pdf' ? 'Building…' : '📄 PDF'}</button>
+        <button class="btn ghost" disabled={!!busy} onClick={save('handout')}>{busy === 'handout' ? 'Building…' : '🖨 Handout'}</button>
       </div>
-      <p class="hint">PowerPoint opens in Keynote, PowerPoint, or Google Slides, where you can edit anything. PDF is best for printing or emailing.</p>
+      <p class="hint">PowerPoint opens in Keynote, PowerPoint, or Google Slides, where you can edit anything. PDF is best for emailing or showing on a screen. Handout prints 3 slides per page with lines for notes — one copy for each adult at a meeting. To print, tap Print in the share sheet.</p>
       {msg && <p class={`toast ${msg.startsWith('⚠') ? 'bad' : ''}`}>{msg}</p>}
       <div class="slides">
         {deck.slides.map((s, i) => <SlideView slide={s} n={i + 1} />)}
