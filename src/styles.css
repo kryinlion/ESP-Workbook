@@ -221,7 +221,7 @@ button { font: inherit; color: inherit; }
 .hero2::after { content: ''; position: absolute; left: -60px; top: 30px; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(240,199,90,.18), transparent 70%); pointer-events: none; }
 .hero2-in { padding: 0 16px 16px; position: relative; z-index: 1; display: flex; flex-direction: column; }
 .hero-label { display: inline-block; background: #141618; color: #f0c75a; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; padding: 6px 10px; border-radius: 0 0 8px 8px; line-height: 1; margin: 0 auto 16px; }
-.hero-row { display: flex; justify-content: space-between; align-items: flex-start; margin: 0 auto 14px; width: 100%; }
+.hero-row { display: flex; justify-content: center; align-items: flex-start; margin: 2px auto 16px; width: 100%; }
 .stack { display: block; overflow: visible; }
 .stack text { fill: #fff; }
 .stack .w0 text { fill: #b9c8d6; }
