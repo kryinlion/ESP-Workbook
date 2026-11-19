@@ -4,6 +4,7 @@ import { loadProject } from './core/store';
 import { persistStorage } from './core/db';
 import { loadAllDocStores } from './core/docstore';
 import './timeline/model';
+import './meetings/model';
 import { autoStartCloud } from './ui/cloudCard';
 import './styles.css';
 

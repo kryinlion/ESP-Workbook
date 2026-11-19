@@ -5,7 +5,7 @@ Workflow: Claude commits locally → Mark pushes with GitHub Desktop → GitHub 
 
 ## ▶ RESUME HERE
 Firebase + P6a cloud backup are DONE (2026-11-19). Colin does NOT use the app until Mark says it's fully built.
-Next build phases: P4 Advisor meetings · P5 Money (pick with Mark). P3 Presentations done.
+Next build phase: P5 Money. P3 Presentations + P4 Advisor meetings done.
 
 ## 🚀 Colin launch checklist (Mark will ask for this when building is complete)
 1. ✅ **Sign-ups off** (done 2026-11-19): Firebase → Authentication → Settings → User actions →
@@ -52,7 +52,12 @@ Next build phases: P4 Advisor meetings · P5 Money (pick with Mark). P3 Presenta
 - **P6a Cloud backup (next, tonight)** — Firebase auth (email link), automatic background backup with
   placeholders, restore + "Re-enter these" list. Keeps the weekly iCloud backup as a second copy.
 - **P3 Presentations** ✅ 2026-11-19 — `src/decks/` engine (one layout → preview, PPTX via pptxgenjs, PDF via pdf-lib); decks: Proposal, Progress update, Project report; exports PowerPoint, PDF, and printable Handout (3 per page + note lines, ink-saving); route `#/decks`
-- **P4 Advisor meetings** · **P5 Money** (next; each will add its own deck to `DECKS`)
+- **P4 Advisor meetings** ✅ 2026-11-19 — `src/meetings/` + `#/meetings`: date/time/where/type, attendees by ROLE
+  (names come from Contacts → nothing new to scrub in the cloud; "Others" = first names only), agenda (one topic per
+  line → **Agenda PDF** with note lines + **Send as text**), notes, decisions, photos. **Action items = real Timeline
+  tasks** tagged `meetingId` (no double tracking). Meetings show on the Timeline as milestones. Decks: Meeting summary
+  (per meeting) + Meeting log (all). Doc store key `meetings` (schema 1).
+- **P5 Money** (next; adds its own Fundraising deck to `DECKS`)
 - **P6b Sync** iPhone ⇄ iPad on the same Firebase foundation (protected fields entered once per device).
 - **P7 Native** (Capacitor, TestFlight).
 - **First update phase / last phase — Multi-Scout ("bring your own backup")**: let other Scouts use the app

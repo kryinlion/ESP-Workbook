@@ -275,12 +275,15 @@ function ItemSheet({ it, onClose }: { it: Item; onClose: () => void }) {
         {it.kind === 'task'
           ? <input class="inp title-inp" value={it.title} onInput={(e: any) => upd({ title: e.target.value })} />
           : <h3 class="sheet-title">{it.title}</h3>}
-        {ms ? (
+        {it.href && ms ? (
+          <a class="btn wide" href={it.href} onClick={onClose}>Open meeting →</a>
+        ) : ms ? (
           it.hard
             ? <p class="muted">Set from your birth date on the Contacts page. This is the one deadline that can't move.</p>
             : <div class="cell"><span class="clbl">Date (also updates your workbook timeline, p. 8)</span><DateInput value={it.due} onChange={(d) => upd({ due: d })} /></div>
         ) : (
           <>
+            {it.meetingId && <a class="lnk" href={`#/meetings/${it.meetingId}`} onClick={onClose}>☰ Action item from a meeting — open the meeting →</a>}
             <div class="cell"><span class="clbl">Status</span><StatusPick value={it.status} onChange={(s) => upd({ status: s })} /></div>
             <div class="cell"><span class="clbl">Due date{it.dueAuto ? ' (from your workbook timeline; set one here to override)' : ''}</span><DateInput value={it.due} onChange={(d) => upd({ due: d })} /></div>
             {it.kind === 'task' && <div class="cell"><span class="clbl">Phase</span><PhasePick value={it.phase} onChange={(p) => upd({ phase: p })} /></div>}

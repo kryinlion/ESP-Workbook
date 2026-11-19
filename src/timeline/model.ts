@@ -33,6 +33,7 @@ export interface TaskData {
   photos?: PhotoRef[];
   createdAt: number;
   doneAt?: number;
+  meetingId?: string; // action item from an advisor meeting
 }
 
 export interface Override { due?: string; owner?: string; notes?: string; photos?: PhotoRef[]; doing?: boolean }
@@ -64,7 +65,13 @@ export interface Item {
   photos?: PhotoRef[];
   num?: number; // checklist step number
   hard?: boolean; // the 18th-birthday deadline
+  href?: string; // open this screen instead of editing here (e.g. a scheduled meeting)
+  meetingId?: string;
 }
+
+// Other modules (meetings, money…) can add their own dated items to the Timeline.
+const extra: (() => Item[])[] = [];
+export function registerTimelineItems(f: () => Item[]) { extra.push(f); }
 
 export const MILESTONES = [
   { id: 'approved', field: 'prop.dateApproved', title: 'Proposal approved', phase: 'proposal' as Phase },
@@ -101,6 +108,7 @@ export function allItems(): Item[] {
   }
   const d18 = deadline18(v);
   if (d18) out.push({ key: 'ms:18', kind: 'milestone', title: '18th birthday: report must be signed before this day', due: d18, phase: 'report', status: 'todo', hard: true });
+  for (const f of extra) out.push(...f());
   return out;
 }
 
@@ -133,7 +141,7 @@ export function updateItem(it: Item, patch: Partial<Item>) {
 
 export function addTask(t: Partial<TaskData>): string {
   const id = crypto.randomUUID();
-  timeline.set((d) => ({ ...d, tasks: [...d.tasks, { id, title: t.title || 'New task', status: 'todo', phase: t.phase || 'other', due: t.due, owner: t.owner, notes: t.notes, photos: t.photos, createdAt: Date.now() }] }));
+  timeline.set((d) => ({ ...d, tasks: [...d.tasks, { id, title: t.title || 'New task', status: 'todo', phase: t.phase || 'other', due: t.due, owner: t.owner, notes: t.notes, photos: t.photos, createdAt: Date.now(), ...(t.meetingId ? { meetingId: t.meetingId } : {}) }] }));
   return id;
 }
 

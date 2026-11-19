@@ -4,19 +4,20 @@ import { timeline } from '../timeline/model';
 import { mediaUrl } from '../core/media';
 import { shareOrDownload } from '../core/backup';
 import { DECKS } from '../decks/decks';
+import { meetingsStore } from '../meetings/model';
 import { FONT, LINE, W, type Prim, type Slide } from '../decks/engine';
 
 // Presentations: pick a deck → see every slide → save as PowerPoint or PDF.
-export function Decks({ deckId }: { deckId?: string }) {
+export function Decks({ deckId, arg }: { deckId?: string; arg?: string }) {
   const p = useProject();
-  timeline.use();
+  timeline.use(); meetingsStore.use();
   const def = DECKS.find((d) => d.id === deckId);
   if (!def) {
     return (
       <div class="page">
         <div class="sec-head"><h1>Presentations</h1></div>
         <p class="intro">Each presentation is built from your workbook answers and photos, so it's always up to date. Slides you haven't filled in yet are skipped.</p>
-        {DECKS.map((d) => {
+        {DECKS.filter((d) => !d.hidden).map((d) => {
           const n = d.build(p.values).slides.length;
           return (
             <a class="card deck-pick" href={`#/decks/${d.id}`}>
@@ -30,13 +31,14 @@ export function Decks({ deckId }: { deckId?: string }) {
       </div>
     );
   }
-  return <DeckView id={def.id} />;
+  return <DeckView id={def.id} arg={arg} />;
 }
 
-function DeckView({ id }: { id: string }) {
+function DeckView({ id, arg }: { id: string; arg?: string }) {
   const p = useProject();
   const def = DECKS.find((d) => d.id === id)!;
-  const deck = useMemo(() => def.build(p.values), [p.values, timeline.get(), id]);
+  meetingsStore.use();
+  const deck = useMemo(() => def.build(p.values, arg), [p.values, timeline.get(), meetingsStore.get(), id, arg]);
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
   const save = (kind: 'pptx' | 'pdf' | 'handout') => async () => {
@@ -54,8 +56,8 @@ function DeckView({ id }: { id: string }) {
   };
   return (
     <div class="page">
-      <a class="lnk back" href="#/decks">‹ Presentations</a>
-      <div class="sec-head"><h1>{def.title}</h1></div>
+      {arg ? <a class="lnk back" href={`#/meetings/${arg}`}>‹ Meeting</a> : <a class="lnk back" href="#/decks">‹ Presentations</a>}
+      <div class="sec-head"><h1>{deck.title}</h1></div>
       <p class="muted">{deck.slides.length} slides · {def.when}</p>
       <div class="deck-actions">
         <button class="btn" disabled={!!busy} onClick={save('pptx')}>{busy === 'pptx' ? 'Building…' : '▶ PowerPoint'}</button>

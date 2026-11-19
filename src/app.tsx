@@ -7,6 +7,7 @@ import { ExportScreen } from './modules/export';
 import { ComingSoon } from './modules/coming';
 import { Timeline } from './modules/timeline';
 import { Decks } from './modules/decks';
+import { Meetings } from './modules/meetings';
 import { BackupPrompt } from './ui/backupPrompt';
 
 export function useRoute() {
@@ -30,7 +31,8 @@ export function App() {
   else if (top === 'workbook') screen = <Workbook sectionId={parts[1]} />;
   else if (top === 'export') screen = <ExportScreen />;
   else if (top === 'timeline') screen = <Timeline view={parts[1]} />;
-  else if (top === 'decks') screen = <Decks deckId={parts[1]} />;
+  else if (top === 'decks') screen = <Decks deckId={parts[1]} arg={parts[2]} />;
+  else if (top === 'meetings') screen = <Meetings id={parts[1]} />;
   else { const m = MODULES.find((x) => x.id === top); screen = m ? <ComingSoon m={m} /> : <Home />; }
 
   return (

@@ -5,11 +5,13 @@ import { overallProgress } from '../workbook/progress';
 import { RANKS, rankFor } from '../ui/hero';
 import { allItems, daysBetween, deadline18, phaseOf, todayIso } from '../timeline/model';
 import { isoToUs } from '../ui/fields';
+import { actionsOf, allMeetings, attendees, getMeeting, longDate, meetingTitle, time12, usDate, type Meeting } from '../meetings/model';
+import { agendaItems } from '../meetings/agenda';
 
 // The decks. Each one is built live from Colin's answers, so it's always up to date —
 // slides with nothing filled in are skipped.
 
-export interface DeckDef { id: string; title: string; blurb: string; when: string; build: (v: Record<string, any>) => Deck }
+export interface DeckDef { id: string; title: string; blurb: string; when: string; hidden?: boolean; build: (v: Record<string, any>, arg?: string) => Deck }
 
 const str = (x: any) => (typeof x === 'string' ? x.trim() : '');
 const pics = (v: Record<string, any>, ...ids: string[]): Photo[] => ids.flatMap((id) => (Array.isArray(v[id]) ? v[id] : [])).filter((p: any) => p?.id);
@@ -134,8 +136,61 @@ function reportDeck(v: Record<string, any>): Deck {
   return { id: 'report', title: 'Project report', file: fileName(v, 'Project_Report'), slides: number(s) };
 }
 
+// ───────────── 4. One meeting (summary to share) ─────────────
+function meetingSlides(ctx: Ctx, m: Meeting, opts: { full: boolean }): Slide[] {
+  const s: Slide[] = [];
+  const who = attendees(m);
+  const head = `${meetingTitle(m)} · ${usDate(m.date)}`;
+  if (who.length) s.push(...bulletSlides(ctx, opts.full ? 'Who was there' : head, who, opts.full ? 'Attendees' : 'Attendees'));
+  const ag = agendaItems(m);
+  if (opts.full && ag.length) s.push(...bulletSlides(ctx, 'Agenda', ag, 'What we planned to cover'));
+  if (opts.full && (m.notes || '').trim()) s.push(...textSlides(ctx, 'Discussion', m.notes!.trim(), [], 'Notes'));
+  const dec = m.decisions.map((d) => d.trim()).filter(Boolean);
+  if (dec.length) s.push(...bulletSlides(ctx, opts.full ? 'Decisions' : `Decisions — ${usDate(m.date)}`, dec, opts.full ? 'What we agreed' : meetingTitle(m)));
+  const acts = actionsOf(m.id).filter((a) => a.title.trim());
+  if (acts.length) s.push(...tableSlides(ctx, opts.full ? 'Action items' : `Action items — ${usDate(m.date)}`, ['What', 'Who', 'Due', 'Status'],
+    acts.map((a) => [a.title, a.owner || '', a.due ? isoToUs(a.due) : '', a.status === 'done' ? 'Done' : a.status === 'doing' ? 'In progress' : 'Open']),
+    [5, 1.8, 1.4, 1.3], { kicker: opts.full ? 'Next steps' : meetingTitle(m) }));
+  if (m.photos.length) s.push(...photoSlides(ctx, opts.full ? 'Photos' : `Photos — ${usDate(m.date)}`, m.photos, meetingTitle(m)));
+  void head;
+  return s;
+}
+
+function meetingDeck(v: Record<string, any>, id?: string): Deck {
+  const ctx = ctxFor(v);
+  const m = id ? getMeeting(id) : undefined;
+  if (!m) return { id: 'meeting', title: 'Meeting summary', file: 'Meeting', slides: [closingSlide('Meeting not found')] };
+  const s: Slide[] = [titleSlide({ kicker: 'Meeting summary', title: meetingTitle(m), sub: `${longDate(m.date)}${m.time ? ` · ${time12(m.time)}` : ''}`, meta: [titleOf(v), str(v['cand.fullName'])].filter(Boolean).join('  ·  '), cover: cover(v) })];
+  s.push(...meetingSlides(ctx, m, { full: true }));
+  s.push(closingSlide('Thank you', 'Questions or changes? Let me know.'));
+  return { id: 'meeting', title: `${meetingTitle(m)} — ${usDate(m.date)}`, file: `Meeting_${safe(meetingTitle(m))}_${m.date.replace(/-/g, '')}`, slides: number(s) };
+}
+
+// ───────────── 5. Meeting log (all meetings) ─────────────
+function meetingLogDeck(v: Record<string, any>): Deck {
+  const ctx = ctxFor(v);
+  const t = todayIso();
+  const held = allMeetings().filter((m) => m.date <= t).reverse(); // oldest first
+  const acts = held.flatMap((m) => actionsOf(m.id));
+  const decisions = held.reduce((a, m) => a + m.decisions.filter((d) => d.trim()).length, 0);
+  const s: Slide[] = [titleSlide({ kicker: 'Meeting log', title: titleOf(v), sub: str(v['cand.fullName']), meta: unitLine(v), cover: cover(v) })];
+  if (held.length) {
+    s.push(statsSlide(ctx, 'Meetings at a glance', [
+      { value: String(held.length), label: `meeting${held.length === 1 ? '' : 's'} held` },
+      { value: String(decisions), label: 'decisions made' },
+      { value: `${acts.filter((a) => a.status === 'done').length}/${acts.length}`, label: 'action items done' },
+    ], 'Summary'));
+    s.push(...tableSlides(ctx, 'All meetings', ['Date', 'Meeting', 'Who'], held.map((m) => [usDate(m.date), meetingTitle(m), attendees(m).join(', ')]), [1.4, 2.4, 5], { kicker: 'Log' }));
+    for (const m of held) s.push(...meetingSlides(ctx, m, { full: false }));
+  }
+  s.push(closingSlide('Thank you', 'For every hour of advice along the way.'));
+  return { id: 'meetings', title: 'Meeting log', file: fileName(v, 'Meeting_Log'), slides: number(s) };
+}
+
 export const DECKS: DeckDef[] = [
   { id: 'proposal', title: 'Proposal presentation', when: 'For proposal approval meetings', blurb: 'Your project idea, beneficiary, timeline, cost, and safety — for your Scoutmaster, committee, beneficiary, and council.', build: proposalDeck },
   { id: 'progress', title: 'Progress update', when: 'Anytime', blurb: 'Where things stand: % complete, steps done, what\'s next, and recent photos.', build: progressDeck },
+  { id: 'meetings', title: 'Meeting log', when: 'For your board of review', blurb: 'Every advisor meeting: who was there, what was decided, and which action items got done.', build: meetingLogDeck },
+  { id: 'meeting', title: 'Meeting summary', when: 'After a meeting', hidden: true, blurb: '', build: meetingDeck },
   { id: 'report', title: 'Project report', when: 'After the work is done', blurb: 'Before, during, and after photos, the numbers, and what you learned — for your board of review.', build: reportDeck },
 ];

@@ -383,3 +383,34 @@ button { font: inherit; color: inherit; }
 .deck-link .ti { font-size: 22px; color: var(--gold); width: 28px; text-align: center; }
 .deck-link b { display: block; }
 .deck-link small { color: var(--muted); font-size: 13.5px; }
+
+/* ---------- advisor meetings (P4) ---------- */
+.mt-card { display: grid; gap: 3px; }
+.mt-date { font-size: 13px; color: var(--muted); }
+.mt-date b { color: var(--ink); }
+.mt-title { font-size: 17px; font-weight: 700; }
+.mt-who { font-size: 14px; color: var(--muted); }
+.mt-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--muted); margin-top: 3px; }
+.mt-meta .open { color: var(--gold); font-weight: 650; }
+.mt-edit .card h3 { margin-bottom: 10px; }
+.mt-edit .cell { margin-top: 10px; }
+.grid2 { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.pick button { border: 1.5px solid var(--line); background: var(--field); color: var(--ink); border-radius: 999px; padding: 7px 12px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.pick button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+:root[data-theme='dark'] .pick button.on { background: var(--green); border-color: var(--green); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .pick button.on { background: var(--green); border-color: var(--green); } }
+.area.tall { min-height: 200px; }
+.mt-line { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+.mt-line .inp { flex: 1; min-width: 0; }
+.x-btn { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
+.ck { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--green); background: transparent; color: #fff; font-weight: 800; cursor: pointer; }
+.ck.on { background: var(--green); }
+.mt-act { border-top: 1px solid var(--line); padding-top: 10px; margin-bottom: 10px; }
+.mt-act.done .inp { text-decoration: line-through; color: var(--muted); }
+.mt-act-sub { padding-left: 34px; margin-top: -4px; }
+.mt-act-sub .cell { margin-top: 0; }
+.mt-empty p { margin-top: 0; }
+.mt-act-sub { flex-wrap: nowrap; }
+.mt-act-sub .cell:first-child { flex: 1 1 auto; min-width: 0; }
+.mt-act-sub .cell:last-child { flex: 0 0 172px; min-width: 172px; }

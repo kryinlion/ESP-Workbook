@@ -19,7 +19,7 @@ export const MODULES: ModuleDef[] = [
     features: ['Tasks with due dates, status, owner, and photos', 'Milestones pulled from the workbook (checklist, timeline dates, plan steps)', 'List, month calendar, and timeline views', '"Due this week" on the Home screen', 'Send dates to your phone calendar'],
   },
   {
-    id: 'meetings', title: 'Advisor Meetings', short: 'Meetings', icon: '☰', tab: true, phase: 4,
+    id: 'meetings', title: 'Advisor Meetings', short: 'Meetings', icon: '☰', tab: true,
     blurb: 'Notes from every meeting with your advisor, Scoutmaster, and beneficiary.',
     features: ['Date, who attended, notes, decisions, photos', 'Action items become Timeline tasks', 'One tap: build a meetings presentation'],
   },
