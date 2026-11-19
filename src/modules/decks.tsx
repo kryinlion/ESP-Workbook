@@ -4,7 +4,8 @@ import { timeline } from '../timeline/model';
 import { mediaUrl } from '../core/media';
 import { shareOrDownload } from '../core/backup';
 import { DECKS } from '../decks/decks';
-import { meetingsStore } from '../meetings/model';
+import { allContactEmails, emailsFor, getMeeting, meetingsStore } from '../meetings/model';
+import { CopyEmails } from '../ui/emails';
 import { FONT, LINE, W, type Prim, type Slide } from '../decks/engine';
 
 // Presentations: pick a deck → see every slide → save as PowerPoint or PDF.
@@ -65,6 +66,7 @@ function DeckView({ id, arg }: { id: string; arg?: string }) {
         <button class="btn ghost" disabled={!!busy} onClick={save('handout')}>{busy === 'handout' ? 'Building…' : '🖨 Handout'}</button>
       </div>
       <p class="hint">Each button opens the share sheet: tap <b>Messages</b> or <b>Mail</b> to send it (for example, to an advisor who missed the meeting), <b>Print</b> to print, or <b>Save to Files</b> to keep a copy. PowerPoint is editable in Keynote, PowerPoint, or Google Slides. Handout prints 3 slides per page with lines for notes. For an Android phone (green bubble), email is safer than a text for big files.</p>
+      <CopyEmails emails={arg && getMeeting(arg) ? emailsFor(getMeeting(arg)!) : allContactEmails()} label={arg ? 'Copy attendee emails' : 'Copy contact emails'} />
       {msg && <p class={`toast ${msg.startsWith('⚠') ? 'bad' : ''}`}>{msg}</p>}
       <div class="slides">
         {deck.slides.map((s, i) => <SlideView slide={s} n={i + 1} />)}

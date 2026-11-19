@@ -1,12 +1,13 @@
 import { useState } from 'preact/hooks';
 import { shareOrDownload } from '../core/backup';
 import { agendaItems, agendaPdf, agendaText } from '../meetings/agenda';
+import { CopyEmails, mailto } from '../ui/emails';
 import { useProject } from '../core/store';
 import { timeline, todayIso, relDay } from '../timeline/model';
 import { DateInput } from '../ui/fields';
 import { Photos } from '../ui/photos';
 import {
-  MEETING_KINDS, ROLES, actionsOf, addAction, addMeeting, allMeetings, attendees, deleteAction, deleteMeeting, getMeeting,
+  MEETING_KINDS, ROLES, actionsOf, emailsFor, addAction, addMeeting, allMeetings, attendees, deleteAction, deleteMeeting, getMeeting,
   longDate, meetingTitle, meetingsStore, time12, updateAction, updateMeeting, usDate, type Meeting,
 } from '../meetings/model';
 
@@ -162,6 +163,7 @@ function AgendaSend({ m }: { m: Meeting }) {
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
   const n = agendaItems(m).length;
+  const to = emailsFor(m);
   const pdf = async () => {
     setBusy('pdf'); setMsg('');
     try { const r = await shareOrDownload(await agendaPdf(m)); if (r !== 'cancelled') setMsg('✓ Agenda ready'); }
@@ -184,7 +186,12 @@ function AgendaSend({ m }: { m: Meeting }) {
         <button type="button" class="btn ghost" disabled={!n || !!busy} onClick={pdf}>{busy === 'pdf' ? 'Building…' : '📄 Agenda PDF'}</button>
         <button type="button" class="btn ghost" disabled={!n} onClick={txt}>💬 Send as text</button>
       </div>
-      <p class="hint">{n ? 'Opens the share sheet: Messages, Mail, Print, or Save to Files. The PDF has lines under each topic for notes.' : 'Add at least one topic to send the agenda.'}</p>
+      <p class="hint">{n ? 'These open the share sheet: Messages, Mail, Print, or Save to Files. The PDF has lines under each topic for notes.' : 'Add at least one topic to send the agenda.'}</p>
+      <a class={`btn wide${n ? '' : ' disabled'}`} href={n ? mailto(to, `Agenda: ${meetingTitle(m)} — ${usDate(m.date)}`, agendaText(m)) : undefined}>
+        ✉️ Email agenda{to.length ? ` to ${to.length}` : ''}
+      </a>
+      <p class="hint">{to.length ? `Opens Mail with the To line filled in (${to.join(', ')}), plus the subject and agenda.` : 'Opens Mail with the subject and agenda filled in. Add emails on the Contacts page for the people coming and the To line fills in too.'}</p>
+      {n > 0 && <CopyEmails emails={to} label="Copy attendee emails" />}
       {msg && <p class={`toast ${msg.startsWith('⚠') ? 'bad' : ''}`}>{msg}</p>}
     </>
   );

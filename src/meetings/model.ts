@@ -53,6 +53,17 @@ export function roleName(id: string) {
   const n = String(values()[r.from] || '').trim();
   return n && n !== '[re-enter]' ? `${r.label} (${n})` : r.label;
 }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Email for a role, from the Contacts page (this device only). */
+export function roleEmail(id: string): string | undefined {
+  const e = String(values()[`${id}.email`] || '').trim();
+  return EMAIL_RE.test(e) ? e : undefined;
+}
+/** Emails of the people marked as attending this meeting. */
+export const emailsFor = (m: Meeting) => [...new Set(m.roles.map(roleEmail).filter(Boolean) as string[])];
+/** Every adult contact with an email (for sending decks). */
+export const allContactEmails = () => [...new Set(ROLES.map((r) => roleEmail(r.id)).filter(Boolean) as string[])];
+
 export function attendees(m: Meeting): string[] {
   const others = (m.others || '').split(/[,;\n]/).map((s) => s.trim()).filter(Boolean);
   return [...m.roles.map(roleName), ...others];

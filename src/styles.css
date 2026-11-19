@@ -414,3 +414,5 @@ button { font: inherit; color: inherit; }
 .mt-act-sub { flex-wrap: nowrap; }
 .mt-act-sub .cell:first-child { flex: 1 1 auto; min-width: 0; }
 .mt-act-sub .cell:last-child { flex: 0 0 172px; min-width: 172px; }
+a.btn.disabled { opacity: .55; pointer-events: none; }
+.copy-emails { margin-top: 4px; }
