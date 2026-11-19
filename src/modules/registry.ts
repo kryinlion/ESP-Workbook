@@ -14,7 +14,7 @@ export const MODULES: ModuleDef[] = [
   { id: 'home', title: 'Home', short: 'Home', icon: '⌂', tab: true },
   { id: 'workbook', title: 'Workbook', short: 'Workbook', icon: '▤', tab: true },
   {
-    id: 'timeline', title: 'Timeline', short: 'Timeline', icon: '◷', tab: true, phase: 2,
+    id: 'timeline', title: 'Timeline', short: 'Timeline', icon: '◷', tab: true,
     blurb: 'Your project-management command center: every date, task, and deadline in one place.',
     features: ['Tasks with due dates, status, owner, and photos', 'Milestones pulled from the workbook (checklist, timeline dates, plan steps)', 'List, month calendar, and timeline views', '"Due this week" on the Home screen', 'Send dates to your phone calendar'],
   },

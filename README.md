@@ -39,5 +39,6 @@ No personal data is in this repo — everything the Scout types lives only on hi
 ### Build phases
 - **P0 Foundation** ✅ shell, storage, images, backup, PWA
 - **P1 Workbook** ✅ all fields + official PDF
-- P2 Timeline / project management · P3 Presentations (PPTX + PDF) · P4 Advisor meetings
+- **P2 Timeline** ✅ list / calendar / trail, workbook steps linked, milestones, 18th-birthday countdown, .ics export
+- P3 Presentations (PPTX + PDF) · P4 Advisor meetings
 - P5 Money · P6 Sync & sharing · P7 Native wrap (Capacitor)

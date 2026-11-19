@@ -1,11 +1,13 @@
 import JSZip from 'jszip';
 import { allDocs, allMedia, clearAll, putDoc, putMedia } from './db';
 import { flush, loadProject, setMeta } from './store';
+import { flushAllDocStores, loadAllDocStores } from './docstore';
 
 // Backup = one .zip containing every module's documents + all images.
 // Format is deliberately simple so future sync / native builds can read it.
 export async function makeBackup(): Promise<File> {
   await flush();
+  await flushAllDocStores();
   const zip = new JSZip();
   const docs = await allDocs();
   const media = await allMedia();
@@ -56,4 +58,5 @@ export async function restoreBackup(file: File) {
     await putMedia({ id: m.id, blob: new Blob([data], { type: m.type }), type: m.type, w: m.w, h: m.h, name: m.name, createdAt: m.createdAt });
   }
   await loadProject();
+  await loadAllDocStores();
 }

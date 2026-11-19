@@ -5,6 +5,7 @@ import { Home } from './modules/home';
 import { Workbook } from './modules/workbook';
 import { ExportScreen } from './modules/export';
 import { ComingSoon } from './modules/coming';
+import { Timeline } from './modules/timeline';
 
 export function useRoute() {
   const [r, setR] = useState(location.hash.slice(1) || '/');
@@ -26,6 +27,7 @@ export function App() {
   if (top === 'home') screen = <Home />;
   else if (top === 'workbook') screen = <Workbook sectionId={parts[1]} />;
   else if (top === 'export') screen = <ExportScreen />;
+  else if (top === 'timeline') screen = <Timeline view={parts[1]} />;
   else { const m = MODULES.find((x) => x.id === top); screen = m ? <ComingSoon m={m} /> : <Home />; }
 
   return (

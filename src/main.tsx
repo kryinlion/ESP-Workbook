@@ -2,6 +2,8 @@ import { render } from 'preact';
 import { App } from './app';
 import { loadProject } from './core/store';
 import { persistStorage } from './core/db';
+import { loadAllDocStores } from './core/docstore';
+import './timeline/model';
 import './styles.css';
 
 // Preview hooks (used by preview.html device frames):
@@ -15,7 +17,7 @@ if (frame === 'phone') { document.documentElement.style.setProperty('--safe-t', 
 if (frame === 'se') document.documentElement.style.setProperty('--safe-t', '20px');
 if (frame === 'tablet') { document.documentElement.style.setProperty('--safe-t', '24px'); document.documentElement.style.setProperty('--safe-b', '18px'); }
 
-loadProject().then(() => {
+Promise.all([loadProject(), loadAllDocStores()]).then(() => {
   render(<App />, document.getElementById('app')!);
   persistStorage();
 });

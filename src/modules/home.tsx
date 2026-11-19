@@ -4,6 +4,7 @@ import { overallProgress, sectionProgress } from '../workbook/progress';
 import { isoToUs } from '../ui/fields';
 import { MODULES } from './registry';
 import { Hero } from '../ui/hero';
+import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus, timeline, todayIso } from '../timeline/model';
 
 export function Home() {
   const p = useProject();
@@ -34,6 +35,8 @@ export function Home() {
           <span>Everything saves on this device automatically. Save a backup to iCloud Drive so nothing is ever lost.</span>
         </a>
       )}
+
+      <DueSoon />
 
       <h2 class="h2">Workbook</h2>
       <div class="sec-grid">
@@ -67,5 +70,35 @@ export function Home() {
         ))}
       </div>
     </div>
+  );
+}
+
+function DueSoon() {
+  timeline.use();
+  const t = todayIso(), wk = addDays(t, 7);
+  const items = allItems().filter((i) => i.kind !== 'milestone' && i.status !== 'done' && i.due && i.due <= wk)
+    .sort((a, b) => a.due!.localeCompare(b.due!));
+  const ms = allItems().filter((i) => i.kind === 'milestone' && i.due! >= t).sort((a, b) => a.due!.localeCompare(b.due!))[0];
+  const d18 = deadline18();
+  return (
+    <>
+      <h2 class="h2">Due this week</h2>
+      <div class="card due-card">
+        {items.length === 0 && <p class="muted" style={{ margin: 0 }}>Nothing due in the next 7 days. <a href="#/timeline" class="lnk">Plan ahead on the Timeline →</a></p>}
+        {items.slice(0, 5).map((i) => (
+          <div class="due-row" style={{ '--pc': phaseOf(i.phase).color } as any}>
+            <button type="button" class="tick" aria-label="Mark done" onClick={() => setStatus(i, 'done')} />
+            <a href="#/timeline" class="due-main"><span>{i.num ? `Step ${i.num}: ` : ''}{i.title}</span><small class={i.due! < t ? 'over' : ''}>{relDay(i.due!)}</small></a>
+          </div>
+        ))}
+        {items.length > 5 && <a href="#/timeline" class="lnk">+ {items.length - 5} more</a>}
+        {(ms || d18) && (
+          <div class="due-foot">
+            {ms && <span>◆ Next milestone: <b>{ms.title}</b> {relDay(ms.due!)}</span>}
+            {d18 && <span>⏳ <b>{Math.max(0, daysBetween(t, d18))}</b> days to 18th birthday</span>}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
