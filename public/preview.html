@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Eagle Project · Device Preview</title>
+<link rel="icon" type="image/png" href="icons/icon-192.png" />
+<style>
+  :root { --bg: #0a1119; --panel: #121c27; --ink: #e8edf2; --muted: #8a98a6; --gold: #d6ab38; --line: #22313f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: radial-gradient(1200px 600px at 50% -10%, #17283a, var(--bg)); color: var(--ink); min-height: 100vh;
+    font: 14px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--line); background: rgba(10,17,25,.7); position: sticky; top: 0; z-index: 5; backdrop-filter: blur(10px); }
+  header h1 { font-size: 15px; margin: 0; display: flex; gap: 8px; align-items: center; }
+  header h1 img { width: 24px; height: 24px; border-radius: 6px; }
+  .grp { display: flex; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+  .grp button { border: 0; background: transparent; color: var(--muted); font: inherit; font-weight: 600; padding: 6px 12px; border-radius: 7px; cursor: pointer; }
+  .grp button.on { background: var(--gold); color: #10161d; }
+  .lbl { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  .spacer { flex: 1; }
+  a.open { color: var(--gold); text-decoration: none; font-weight: 600; }
+  .note { color: var(--muted); font-size: 12.5px; padding: 10px 20px 0; max-width: 1100px; }
+  .stage { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 36px; padding: 28px 20px 60px; }
+  .dev { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .dev .cap { color: var(--muted); font-size: 12px; }
+  .frame { position: relative; background: #05080c; border: 1px solid #2b3a49; box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 0 0 2px #1a2632; overflow: hidden; }
+  .frame iframe { border: 0; display: block; background: #fff; transform-origin: 0 0; }
+  .phone { border-radius: 54px; padding: 14px; }
+  .phone .inner { border-radius: 42px; overflow: hidden; position: relative; }
+  .phone .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; background: #000; border-radius: 20px; z-index: 2; pointer-events: none; }
+  .tablet { border-radius: 36px; padding: 18px; }
+  .tablet .inner { border-radius: 20px; overflow: hidden; }
+</style>
+</head>
+<body>
+<header>
+  <h1><img src="icons/icon-192.png" alt="" /> Eagle Project · Device Preview</h1>
+  <span class="lbl">Devices</span>
+  <div class="grp" id="devs">
+    <button data-v="phone" class="on">iPhone</button>
+    <button data-v="both">iPhone + iPad</button>
+    <button data-v="tablet">iPad</button>
+    <button data-v="se">Small iPhone</button>
+  </div>
+  <span class="lbl">Look</span>
+  <div class="grp" id="theme">
+    <button data-v="dark" class="on">Dark</button>
+    <button data-v="light">Light</button>
+  </div>
+  <span class="lbl">Zoom</span>
+  <div class="grp" id="zoom">
+    <button data-v="0.75">75%</button>
+    <button data-v="1" class="on">100%</button>
+  </div>
+  <span class="spacer"></span>
+  <a class="open" href="./" target="_blank">Open app full-window ↗</a>
+</header>
+<p class="note">Both frames run the real app and share the same saved data in this browser, so a change in one shows up in the other after you switch screens. Test data saved here stays in this desktop browser only; it never reaches Colin's phone. To start clean, use ⇪ → "Erase all data on this device".</p>
+<div class="stage" id="stage"></div>
+<script>
+  const DEV = {
+    phone: { name: 'iPhone 15 · 393 × 852', w: 393, h: 852, cls: 'phone' },
+    se: { name: 'iPhone SE · 375 × 667', w: 375, h: 667, cls: 'phone' },
+    tablet: { name: 'iPad · 820 × 1180', w: 820, h: 1180, cls: 'tablet', scale: 0.72 },
+  };
+  const state = { dev: 'phone', theme: 'dark', zoom: 1 };
+  try { Object.assign(state, JSON.parse(localStorage.getItem('esp-preview') || '{}')); } catch (e) {}
+  function render() {
+    try { localStorage.setItem('esp-preview', JSON.stringify(state)); } catch (e) {}
+    for (const g of ['devs', 'theme', 'zoom']) {
+      const key = g === 'devs' ? 'dev' : g;
+      document.querySelectorAll(`#${g} button`).forEach((b) => b.classList.toggle('on', b.dataset.v === String(state[key])));
+    }
+    const list = state.dev === 'both' ? ['phone', 'tablet'] : [state.dev];
+    const stage = document.getElementById('stage'); stage.innerHTML = '';
+    for (const k of list) {
+      const d = DEV[k]; const s = (d.scale || 1) * state.zoom;
+      const wrap = document.createElement('div'); wrap.className = 'dev';
+      wrap.innerHTML = `<div class="frame ${d.cls}"><div class="inner" style="width:${d.w * s}px;height:${d.h * s}px">${d.cls === 'phone' ? '<div class="island"></div>' : ''}<iframe src="./?theme=${state.theme}&frame=${k}" style="width:${d.w}px;height:${d.h}px;transform:scale(${s})"></iframe></div></div><div class="cap">${d.name}</div>`;
+      stage.appendChild(wrap);
+    }
+  }
+  for (const g of ['devs', 'theme', 'zoom']) {
+    document.getElementById(g).addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      const key = g === 'devs' ? 'dev' : g;
+      state[key] = g === 'zoom' ? Number(b.dataset.v) : b.dataset.v; render();
+    });
+  }
+  render();
+</script>
+</body>
+</html>

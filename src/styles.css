@@ -54,7 +54,8 @@ button { font: inherit; color: inherit; }
 .tabbar a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0; color: var(--muted); font-size: 11px; font-weight: 600; }
 .tabbar .ti { font-size: 20px; line-height: 1; height: 22px; }
 .tabbar a.on { color: var(--green); }
-@media (prefers-color-scheme: dark) { .tabbar a.on { color: var(--gold); } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .tabbar a.on { color: var(--gold); } }
+:root[data-theme='dark'] .tabbar a.on { color: var(--gold); }
 
 .page { max-width: 760px; margin: 0 auto; padding: 16px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 16px; margin: 0 0 14px; }

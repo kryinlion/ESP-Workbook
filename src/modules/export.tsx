@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { project, useProject, flush } from '../core/store';
-import { getMedia } from '../core/db';
+import { clearAll, getMedia } from '../core/db';
 import { backupNow, restoreBackup, shareOrDownload } from '../core/backup';
 
 const safe = (s: string) => (s || '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40);
@@ -10,6 +10,7 @@ export function ExportScreen() {
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
   const [restoreFile, setRestoreFile] = useState<File | null>(null);
+  const [eraseAsk, setEraseAsk] = useState(false);
   const standalone = matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone;
 
   const run = async (label: string, fn: () => Promise<any>) => {
@@ -72,6 +73,22 @@ export function ExportScreen() {
       </section>
 
       {msg && <p class={`toast ${msg.startsWith('⚠') ? 'bad' : ''}`}>{msg}</p>}
+
+      <section class="card">
+        <h2>Start over on this device</h2>
+        <p class="intro">Erases every answer, photo, and signature saved on this device. Save a backup first if you might want it back.</p>
+        {!eraseAsk
+          ? <button class="btn ghost wide" onClick={() => setEraseAsk(true)}>Erase all data on this device…</button>
+          : (
+            <div class="confirm">
+              <p><b>Erase everything on this device?</b> This can't be undone unless you have a backup.</p>
+              <div class="row-btns">
+                <button class="btn ghost" onClick={() => setEraseAsk(false)}>Cancel</button>
+                <button class="btn danger" onClick={() => run('erase', async () => { await clearAll(); location.hash = '#/'; location.reload(); })}>Erase everything</button>
+              </div>
+            </div>
+          )}
+      </section>
 
       {!standalone && (
         <section class="card">
