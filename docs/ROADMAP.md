@@ -8,7 +8,7 @@ Firebase + P6a cloud backup are DONE (2026-11-19). Colin does NOT use the app un
 Next build phases: P3 Presentations · P4 Advisor meetings · P5 Money (pick with Mark).
 
 ## 🚀 Colin launch checklist (Mark will ask for this when building is complete)
-1. **Sign-ups off** (do now if not done): Firebase → Authentication → Settings → User actions →
+1. ✅ **Sign-ups off** (done 2026-11-19): Firebase → Authentication → Settings → User actions →
    untick **Enable create (sign-up)** → Save. Mark's own test account keeps working.
 2. **Add Colin**: Authentication → Users → **Add user** → Colin's email + any temporary password (no need to share it).
 3. On Colin's iPhone: Safari → kryinlion.github.io/ESP-Workbook → Share → **Add to Home Screen**; always open from the icon.
