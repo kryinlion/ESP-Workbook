@@ -474,21 +474,23 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .sec-tile.holo.done { --holo: #4ee0a0; --holo-rgb: 78, 224, 160; }   /* Jarvis "completed" green */
 /* Beam half-width as an animatable number (% of the grid). iOS 16.4+ animates registered properties. */
 @property --bw { syntax: '<number>'; inherits: false; initial-value: 6; }
+@property --ba { syntax: '<number>'; inherits: false; initial-value: 1; }  /* beam brightness multiplier */
 .sec-tile.holo::before {               /* ONE light beam across the whole grid: each tile shows its slice */
   content: ''; position: absolute; z-index: -1; pointer-events: none;
   left: calc(-1 * var(--ox, 0px)); top: calc(-1 * var(--oy, 0px));
   width: var(--gw, 100%); height: var(--gh, 100%);
   --bw: 6;
-  background: linear-gradient(105deg, transparent calc((50 - var(--bw)) * 1%), rgba(var(--holo-rgb), .16) 50%, transparent calc((50 + var(--bw)) * 1%));
+  --ba: 1;
+  background: linear-gradient(105deg, transparent calc((50 - var(--bw)) * 1%), rgba(var(--holo-rgb), calc(.16 * var(--ba))) 50%, transparent calc((50 + var(--bw)) * 1%));
   animation: holo-sweep 9s infinite;
 }
 /* 9 s cycle: rest 3 s → glide in 2.5 s, widening (smooth) → near-pause 0.5 s at centre, widest →
-   glide out 2.5 s, narrowing (smooth) → rest. Starts and ends at today's width. */
+   glide out 2.5 s, narrowing and fading to half brightness (smooth) → rest. Starts and ends at today's width. */
 @keyframes holo-sweep {
-  0%, 33.3% { transform: translateX(-100%); --bw: 6;  animation-timing-function: cubic-bezier(.45, .05, .55, .95); }
-  61.1%     { transform: translateX(-4%);   --bw: 18; animation-timing-function: linear; }
-  66.7%     { transform: translateX(4%);    --bw: 18; animation-timing-function: cubic-bezier(.45, .05, .55, .95); }
-  94.4%, 100% { transform: translateX(100%); --bw: 6; }
+  0%, 33.3% { transform: translateX(-100%); --bw: 6;  --ba: 1;   animation-timing-function: cubic-bezier(.45, .05, .55, .95); }
+  61.1%     { transform: translateX(-4%);   --bw: 18; --ba: 1;   animation-timing-function: linear; }
+  66.7%     { transform: translateX(4%);    --bw: 18; --ba: 1;   animation-timing-function: cubic-bezier(.45, .05, .55, .95); }
+  94.4%, 100% { transform: translateX(100%); --bw: 6; --ba: 0.5; }   /* fades to half as it leaves */
 }
 @media (prefers-reduced-motion: reduce) { .sec-tile.holo::before { animation: none; } }
 .sec-tile.holo .sec-ico {
