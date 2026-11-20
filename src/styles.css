@@ -507,7 +507,8 @@ select.inp { appearance: none; -webkit-appearance: none; }
   position: relative; overflow: hidden; isolation: isolate;
   border: 1px solid rgba(var(--fx),0.45);
   background: linear-gradient(rgba(var(--fx-tint),0.7), rgba(var(--fx-tint),0.7)), var(--card);
-  animation: ws-fx-flicker 14s steps(1, end) infinite;
+  /* steady glow — no timed flicker (Mark 2026-11-20: only Thank-yous flashes, and only when owed) */
+  box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06);
 }
 .ws-fx > :not(.fx-mote) { position: relative; z-index: 1; }
 .ws-fx::before, .ws-fx::after {             /* glowing corner brackets */
@@ -530,17 +531,7 @@ select.inp { appearance: none; -webkit-appearance: none; }
   0% { transform: translate(0, 0) scale(0.8); opacity: 0; } 15% { opacity: 0.55; } 85% { opacity: 0.45; }
   100% { transform: translate(-8px, -110px) scale(1.2); opacity: 0; }
 }
-@keyframes ws-fx-flicker {                   /* same rhythm as Friday's Hollo-Magic boxes */
-  0%, 100%, 13%, 29%, 46%, 63.8%, 82%, 92.5% { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
-  12% { border-color: rgba(var(--fx),0.65); box-shadow: 0 0 14px rgba(var(--fx),0.30), inset 0 0 10px rgba(var(--fx),0.12); }
-  28%, 81% { border-color: rgba(var(--fx-hi),0.95); box-shadow: 0 0 22px rgba(var(--fx),0.70), inset 0 0 16px rgba(var(--fx),0.32); }
-  44% { border-color: rgba(var(--fx),0.75); box-shadow: 0 0 16px rgba(var(--fx),0.45), inset 0 0 12px rgba(var(--fx),0.18); }
-  44.6% { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
-  45.2% { border-color: rgba(var(--fx),0.55); box-shadow: 0 0 12px rgba(var(--fx),0.22), inset 0 0 9px rgba(var(--fx),0.10); }
-  63% { border-color: rgba(var(--fx),0.85); box-shadow: 0 0 18px rgba(var(--fx),0.55), inset 0 0 14px rgba(var(--fx),0.25); }
-  92% { border-color: rgba(var(--fx),0.55); box-shadow: 0 0 11px rgba(var(--fx),0.20), inset 0 0 8px rgba(var(--fx),0.08); }
-}
-@media (prefers-reduced-motion: reduce) { .ws-fx, .ws-fx .fx-mote { animation: none; } .ws-fx .fx-mote { opacity: 0.35; bottom: 40%; } }
+@media (prefers-reduced-motion: reduce) { .ws-fx, .ws-fx .fx-mote, .fx-thanks.owed.zap { animation: none; } .ws-fx .fx-mote { opacity: 0.35; bottom: 40%; } }
 .ws-fx .bar { background: rgba(var(--fx),0.12); }
 .ws-fx .lnk-btn { color: rgb(var(--fx)); text-shadow: 0 0 6px rgba(var(--fx),0.45); }
 .ws-fx .mn-k { color: rgb(var(--fx)); opacity: .9; }
@@ -548,7 +539,6 @@ select.inp { appearance: none; -webkit-appearance: none; }
 /* Raised / Spent boxes — green / red, toned down so they don't overpower (Mark picked 2026-11-20) */
 .fx-raised { --fx: 78,224,160;  --fx-hi: 200,255,225; --fx-tint: 12,36,28; }
 .fx-spent  { --fx: 255,110,110; --fx-hi: 255,215,215; --fx-tint: 44,20,22; }
-.fx-raised, .fx-spent { animation-duration: 18s; }
 .fx-raised .fx-mote, .fx-spent .fx-mote { opacity: .6; }
 
 /* top bar back button (project name now lives only on Home) */
@@ -561,10 +551,10 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .limit-bad { color: #ff8a8a; font-weight: 600; }
 .inp.inp-bad { border-color: #ff8a8a; box-shadow: 0 0 0 3px rgba(255,138,138,.2); }
 /* Thank-yous: purple, toned down like Raised/Spent; random bright edge "zap" while any are owed */
-.fx-thanks { --fx: 182,140,255; --fx-hi: 236,224,255; --fx-tint: 32,22,52; animation-duration: 18s; }
+.fx-thanks { --fx: 182,140,255; --fx-hi: 236,224,255; --fx-tint: 32,22,52; }
 .fx-thanks .fx-mote { opacity: .6; }
 .fx-thanks.owed b { color: rgb(var(--fx-hi)); text-shadow: 0 0 8px rgba(var(--fx),0.6); }
-.fx-thanks.zap { animation: ws-fx-flicker 18s steps(1, end) infinite, ws-fx-zap 0.9s steps(1, end) 1; } /* zap listed last so it wins */
+.fx-thanks.owed.zap { animation: ws-fx-zap 0.9s steps(1, end) 1; } /* random flash, only while thank-yous are owed */
 @keyframes ws-fx-zap {
   0%   { border-color: rgba(var(--fx-hi),1); box-shadow: 0 0 26px rgba(var(--fx),0.85), inset 0 0 18px rgba(var(--fx),0.40); }
   12%  { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
@@ -572,4 +562,13 @@ select.inp { appearance: none; -webkit-appearance: none; }
   34%  { border-color: rgba(var(--fx),0.55); box-shadow: 0 0 12px rgba(var(--fx),0.25), inset 0 0 9px rgba(var(--fx),0.10); }
   46%  { border-color: rgba(var(--fx),0.85); box-shadow: 0 0 18px rgba(var(--fx),0.55), inset 0 0 14px rgba(var(--fx),0.25); }
   60%, 100% { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
+}
+
+/* Money stat boxes: label left, amount right (same inset as the label). iPad: one row, bigger label on the amount's baseline. */
+.mn-stats .card { display: grid; grid-template-columns: 1fr; }
+.mn-stats .card b { justify-self: end; text-align: right; }
+@media (min-width: 600px) {
+  .mn-stats .card { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 16px 18px; }
+  .mn-stats .mn-k { font-size: 17px; }
+  .mn-stats b { font-size: 24px; }
 }
