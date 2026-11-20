@@ -3,9 +3,32 @@
 Live app: https://kryinlion.github.io/ESP-Workbook/ · Desktop device preview: `/preview.html`
 Workflow: Claude commits locally → Mark pushes with GitHub Desktop → GitHub Actions deploys Pages.
 
-## ▶ RESUME HERE
-Firebase + P6a cloud backup are DONE (2026-11-19). Colin does NOT use the app until Mark says it's fully built.
-All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mark's review → update-safety TODOs → Colin launch checklist. Later: P6b Sync, P7 Native, multi-Scout.
+## ▶ RESUME HERE (next session, from 2026-11-20): NAVIGATION + NEW-USER TUTORIAL
+Status: P0–P6b all built & pushed (workbook, PDF, timeline, decks/handout, meetings+agenda, money, cloud backup,
+iPhone⇄iPad sync, API key locked to app address, hologram Home tiles). Colin still waits until Mark says go.
+
+**Why:** Mark showed Colin around and it was "a navigational challenge." Goal: simplify where we can, then build a
+tutorial with animated pop-ups that tell a new user what to do first and where to go for what.
+Work flow Mark likes: preview ideas on ONE screen/element first, then roll out.
+
+Known navigation pain points to review with Mark (seed list — confirm by walking the app together):
+- Important places are hidden: Presentations (no tab; only Home card / Export), Backup & sync + sign-in (behind the
+  small ⇪ icon top-right → Export), install/erase settings (same page). No obvious "Settings" or "Help".
+- Back navigation is inconsistent: in-page "‹ Meetings / ‹ Money / ‹ Presentations" links, none in the top bar.
+- Workbook is long: section → many groups, no "Next section →", no "continue where you left off".
+- Money has 5 sub-tabs (chips); meeting/donation editors are long pages.
+- Home is busy: hero, re-enter, backup warning, due-this-week, 6 tiles, Money, Presentations, key dates.
+Ideas to discuss:
+- A "Next step" hero button on Home: one tap to the single most useful thing to do now.
+- Replace ⇪ with a clear "More" tab (Presentations · Backup & sync · Settings · Help/Tour) or a labeled menu.
+- iOS-style back button in the top bar on every sub-screen (+ title of where you are).
+- Workbook: "Continue where you left off" + "Next section →" at the bottom of each section.
+Tutorial ideas:
+- First-run welcome (2–3 cards): what the app does, it saves itself, private info stays on the phone.
+- Guided tour: spotlight + animated pointer bubble on each tab/key button, "Next / Skip", replay from Help.
+- "First quests" checklist that fits the rank/game feel (e.g. add name + project title, add a cover photo, add a
+  Timeline task, sign in to cloud backup, make a backup) with a small celebration on each.
+- One-time tips the first time each screen opens; "?" button to see them again.
 
 ## 🚀 Colin launch checklist (Mark will ask for this when building is complete)
 1. ✅ **Sign-ups off** (done 2026-11-19): Firebase → Authentication → Settings → User actions →
