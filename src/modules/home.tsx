@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { useProject } from '../core/store';
 import { SECTIONS, CHECKLIST } from '../workbook/schema';
 import { overallProgress, sectionProgress } from '../workbook/progress';
@@ -18,6 +18,11 @@ export function Home() {
   const p = useProject();
   const gridRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => { if (gridRef.current) alignTileIcons(gridRef.current); });
+  useEffect(() => {
+    const f = () => { if (gridRef.current) alignTileIcons(gridRef.current); };
+    window.addEventListener('resize', f);
+    return () => window.removeEventListener('resize', f);
+  }, []);
   const v = p.values;
   const all = overallProgress(v);
   const ck = (v.checklist || {}) as Record<number, boolean>;
@@ -158,6 +163,15 @@ function inkTop(el: HTMLElement, text: string): number {
   return (lh - (A + D)) / 2 + A - m.actualBoundingBoxAscent; // px from the line box top to the first inked pixel
 }
 function alignTileIcons(grid: HTMLElement) {
+  // shared light sweep: tell each tile where it sits in the grid so its sweep layer lines up with the others
+  const g = grid.getBoundingClientRect();
+  grid.querySelectorAll<HTMLElement>('.sec-tile.holo').forEach((tile) => {
+    const r = tile.getBoundingClientRect();
+    tile.style.setProperty('--ox', `${r.left - g.left + tile.clientLeft}px`);
+    tile.style.setProperty('--oy', `${r.top - g.top + tile.clientTop}px`);
+    tile.style.setProperty('--gw', `${g.width}px`);
+    tile.style.setProperty('--gh', `${g.height}px`);
+  });
   grid.querySelectorAll<HTMLElement>('.sec-tile.holo').forEach((tile) => {
     const ico = tile.querySelector<HTMLElement>('.sec-ico');
     const w = tile.querySelector<HTMLElement>('.sec-name .w');
