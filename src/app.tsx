@@ -21,8 +21,8 @@ export function useRoute() {
   return r;
 }
 
-// Where the top-bar back button goes from each screen (null = a main tab screen → show the app name).
-// The project's own name lives only on Home (in the hero), so this slot is free for navigation.
+// Top-bar slot: on Home it shows the PROJECT NAME; on every other screen it's a back button
+// (main tabs → Home, deeper screens → their parent list). Mark 2026-11-20.
 function backFor(parts: string[]): { href: string; label: string } | null {
   const [a, b, c] = parts;
   if (a === 'meetings' && b) return { href: '#/meetings', label: 'Meetings' };
@@ -32,8 +32,9 @@ function backFor(parts: string[]): { href: string; label: string } | null {
   }
   if (a === 'decks' && b === 'meeting' && c) return { href: `#/meetings/${c}`, label: 'Meeting' };
   if (a === 'decks' && b) return { href: '#/decks', label: 'Presentations' };
-  if (a === 'decks' || a === 'export') return { href: '#/', label: 'Home' };
-  return null;
+  // every other screen (Workbook, Timeline, Meetings, Money, Presentations, Export…) goes back Home
+  if (a && a !== 'home') return { href: '#/', label: 'Home' };
+  return null; // Home itself shows the project name
 }
 
 export function App() {
@@ -58,7 +59,7 @@ export function App() {
       <header class="topbar">
         {back
           ? <a href={back.href} class="topback" aria-label={`Back to ${back.label}`}><span class="chev">‹</span><span>{back.label}</span></a>
-          : <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span>Eagle Project</span></a>}
+          : <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span>{p.values['project.title'] || 'My Eagle Project'}</span></a>}
         <span class={`saved ${saveState}`} aria-live="polite">{saveState === 'saving' ? 'Saving…' : 'Saved ✓'}</span>
         <a href="#/export" class="share-btn" aria-label="Export and backup">⇪</a>
       </header>
