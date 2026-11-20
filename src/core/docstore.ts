@@ -13,6 +13,9 @@ export interface DocStore<T> {
 }
 
 const registry: DocStore<any>[] = [];
+// Other copies of the app (desktop preview frames, a second tab) announce saves here.
+const chan = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('esp-docstores') : null;
+const me = Math.random().toString(36).slice(2);
 export const docStores = () => registry;
 export async function loadAllDocStores() { for (const s of registry) await s.load(); }
 export async function flushAllDocStores() { for (const s of registry) await s.flush(); }
@@ -44,7 +47,7 @@ export function createDocStore<T>(key: string, blank: () => T, migrate?: (d: any
       if (!dirty) return saving;
       dirty = false;
       const snap = doc;
-      saving = saving.then(() => putDoc(key, snap)).then(() => undefined);
+      saving = saving.then(() => putDoc(key, snap)).then(() => { chan?.postMessage({ key, from: me }); });
       return saving;
     },
     use() {
@@ -53,6 +56,11 @@ export function createDocStore<T>(key: string, blank: () => T, migrate?: (d: any
       return doc;
     },
   };
+  // another copy saved this doc: reload it unless we have unsaved changes of our own
+  chan?.addEventListener('message', (e: MessageEvent) => {
+    if (e.data?.from === me || e.data?.key !== key || dirty) return;
+    store.load();
+  });
   registry.push(store);
   return store;
 }

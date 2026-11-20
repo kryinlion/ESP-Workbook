@@ -36,7 +36,14 @@ export function createSync(fs: Firestore, storage: FirebaseStorage, onStatus: (s
     return await allDocs() as Record<string, any>;
   }
 
+  // Only one copy of the app syncs at a time (desktop preview frames / tabs share storage).
   async function cycle(): Promise<void> {
+    const locks = (navigator as any).locks;
+    if (locks?.request) return locks.request('esp-sync', { ifAvailable: true }, (l: any) => (l ? runCycle() : undefined));
+    return runCycle();
+  }
+
+  async function runCycle(): Promise<void> {
     if (!uid || running) return;
     running = true; onStatus({ running: true, error: '' });
     try {
@@ -63,11 +70,14 @@ export function createSync(fs: Firestore, storage: FirebaseStorage, onStatus: (s
       if (changedHere) {
         const now = withSharedFlags(toEntries(await docsNow()), st.base);
         if (!same(now, local)) { running = false; onStatus({ running: false }); return; }
-        const next = fromEntries(result, docs);
-        if (!same(next.project.values, docs.project?.values)) await replaceProject({ ...project(), values: next.project.values, updatedAt: Date.now() });
-        if (!same(next.timeline, docs.timeline)) timeline.set(next.timeline as any);
-        if (!same(next.meetings, docs.meetings)) meetingsStore.set(next.meetings as any);
-        if (!same(next.money, docs.money)) moneyStore.set(next.money as any);
+        // Private fields never sync, so take them from what is on screen RIGHT NOW (not the snapshot
+        // from the start of this cycle) — typing a contact while a sync runs can never be undone.
+        const live = { ...docs, project: project(), timeline: timeline.get(), meetings: meetingsStore.get(), money: moneyStore.get() };
+        const next = fromEntries(result, live);
+        if (!same(next.project.values, live.project.values)) await replaceProject({ ...project(), values: next.project.values, updatedAt: Date.now() });
+        if (!same(next.timeline, live.timeline)) timeline.set(next.timeline as any);
+        if (!same(next.meetings, live.meetings)) meetingsStore.set(next.meetings as any);
+        if (!same(next.money, live.money)) moneyStore.set(next.money as any);
         await flushAllDocStores();
       }
 
