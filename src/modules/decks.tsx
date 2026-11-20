@@ -58,7 +58,6 @@ function DeckView({ id, arg }: { id: string; arg?: string }) {
   };
   return (
     <div class="page">
-      {arg ? <a class="lnk back" href={`#/meetings/${arg}`}>‹ Meeting</a> : <a class="lnk back" href="#/decks">‹ Presentations</a>}
       <div class="sec-head"><h1>{deck.title}</h1></div>
       <p class="muted">{deck.slides.length} slides · {def.when}</p>
       <div class="deck-actions">

@@ -42,6 +42,9 @@ export interface Field {
   items?: string[];
   // photos: which "album" tag photos are filed under
   album?: string;
+  // text: character limit and word filter (used for the project title shown on Home)
+  max?: number;
+  clean?: boolean;
 }
 
 export interface Group {
@@ -127,7 +130,7 @@ export const SECTIONS: Section[] = [
         intro: 'Your name and project title print at the top of every workbook page.',
         fields: [
           { id: 'cand.fullName', type: 'text', label: "Candidate's full name", pdf: 'Candidates Full Name' },
-          { id: 'project.title', type: 'text', label: 'Project title', pdf: 'Project Title' },
+          { id: 'project.title', type: 'text', label: 'Project title', pdf: 'Project Title', max: 27, clean: true, hint: 'Up to 27 characters. It shows on your Home screen and on your presentations.' },
           { id: 'project.cover', type: 'photos', label: 'Cover image', hint: 'Optional. A hero image for your presentations.', album: 'cover' },
         ],
       },

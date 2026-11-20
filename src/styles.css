@@ -498,3 +498,68 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .tabbar a.on { color: var(--gold); }
 .pick button.on { background: var(--green); border-color: var(--green); }
 .warn-t, .mn-row-end small.warn-t { color: var(--gold); }
+
+/* ---------- Money: spacing + Friday "Work Shop" box effects ---------- */
+.mn-actions { margin-bottom: 14px; }
+/* Colour comes from --fx (r,g,b) so the same effect can be cyan, green, red… */
+.ws-fx {
+  --fx: 94,233,255; --fx-hi: 220,250,255; --fx-tint: 10,37,48;
+  position: relative; overflow: hidden; isolation: isolate;
+  border: 1px solid rgba(var(--fx),0.45);
+  background: linear-gradient(rgba(var(--fx-tint),0.7), rgba(var(--fx-tint),0.7)), var(--card);
+  animation: ws-fx-flicker 14s steps(1, end) infinite;
+}
+.ws-fx > :not(.fx-mote) { position: relative; z-index: 1; }
+.ws-fx::before, .ws-fx::after {             /* glowing corner brackets */
+  content: ''; position: absolute; width: 12px; height: 12px; border-color: rgb(var(--fx)); border-style: solid;
+  filter: drop-shadow(0 0 2px rgba(var(--fx),0.9)) drop-shadow(0 0 5px rgba(var(--fx),0.45)); pointer-events: none; z-index: 2;
+}
+.ws-fx::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+.ws-fx::after { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+.ws-fx .fx-mote {                            /* drifting dust motes */
+  position: absolute; bottom: 0; width: 2px; height: 2px; border-radius: 50%; z-index: 0; pointer-events: none;
+  background: rgba(var(--fx),0.7); box-shadow: 0 0 4px rgba(var(--fx),0.9);
+  animation: ws-fx-mote ease-in-out infinite;
+}
+.ws-fx .fx-mote-1 { left: 14%; animation-duration: 10s; }  .ws-fx .fx-mote-2 { left: 36%; animation-duration: 13s; }
+.ws-fx .fx-mote-3 { left: 55%; animation-duration: 11s; }  .ws-fx .fx-mote-4 { left: 72%; animation-duration: 14s; }
+.ws-fx .fx-mote-5 { left: 88%; animation-duration: 12s; }  .ws-fx .fx-mote-6 { left: 6%; animation-duration: 9s; }
+.ws-fx .fx-mote-7 { left: 24%; animation-duration: 12s; }  .ws-fx .fx-mote-8 { left: 46%; animation-duration: 10s; }
+.ws-fx .fx-mote-9 { left: 64%; animation-duration: 13s; }  .ws-fx .fx-mote-10 { left: 80%; animation-duration: 11s; }
+@keyframes ws-fx-mote {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0; } 15% { opacity: 0.55; } 85% { opacity: 0.45; }
+  100% { transform: translate(-8px, -110px) scale(1.2); opacity: 0; }
+}
+@keyframes ws-fx-flicker {                   /* same rhythm as Friday's Hollo-Magic boxes */
+  0%, 100%, 13%, 29%, 46%, 63.8%, 82%, 92.5% { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
+  12% { border-color: rgba(var(--fx),0.65); box-shadow: 0 0 14px rgba(var(--fx),0.30), inset 0 0 10px rgba(var(--fx),0.12); }
+  28%, 81% { border-color: rgba(var(--fx-hi),0.95); box-shadow: 0 0 22px rgba(var(--fx),0.70), inset 0 0 16px rgba(var(--fx),0.32); }
+  44% { border-color: rgba(var(--fx),0.75); box-shadow: 0 0 16px rgba(var(--fx),0.45), inset 0 0 12px rgba(var(--fx),0.18); }
+  44.6% { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
+  45.2% { border-color: rgba(var(--fx),0.55); box-shadow: 0 0 12px rgba(var(--fx),0.22), inset 0 0 9px rgba(var(--fx),0.10); }
+  63% { border-color: rgba(var(--fx),0.85); box-shadow: 0 0 18px rgba(var(--fx),0.55), inset 0 0 14px rgba(var(--fx),0.25); }
+  92% { border-color: rgba(var(--fx),0.55); box-shadow: 0 0 11px rgba(var(--fx),0.20), inset 0 0 8px rgba(var(--fx),0.08); }
+}
+@media (prefers-reduced-motion: reduce) { .ws-fx, .ws-fx .fx-mote { animation: none; } .ws-fx .fx-mote { opacity: 0.35; bottom: 40%; } }
+.ws-fx .bar { background: rgba(var(--fx),0.12); }
+.ws-fx .lnk-btn { color: rgb(var(--fx)); text-shadow: 0 0 6px rgba(var(--fx),0.45); }
+.ws-fx .mn-k { color: rgb(var(--fx)); opacity: .9; }
+
+/* Raised / Spent boxes — Version A: cyan family (raised leans green, spent leans red) */
+.fx-raised { --fx: 72,240,196;  --fx-hi: 215,255,242; --fx-tint: 9,40,38; }
+.fx-spent  { --fx: 150,190,255; --fx-hi: 236,226,255; --fx-tint: 30,30,52; }
+/* Version B: true green / red, toned down so they don't overpower */
+.fxb .fx-raised { --fx: 78,224,160;  --fx-hi: 200,255,225; --fx-tint: 12,36,28; }
+.fxb .fx-spent  { --fx: 255,110,110; --fx-hi: 255,215,215; --fx-tint: 44,20,22; }
+.fxb .fx-raised, .fxb .fx-spent { animation-duration: 18s; }
+.fxb .fx-raised .fx-mote, .fxb .fx-spent .fx-mote { opacity: .6; }
+
+/* top bar back button (project name now lives only on Home) */
+.topback { display: flex; align-items: center; gap: 2px; min-width: 0; flex: 1; font-weight: 650; font-size: 17px; color: #f0c75a; padding: 6px 0; }
+.topback .chev { font-size: 30px; line-height: 1; margin-top: -3px; margin-right: 4px; }
+.topback span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.limit-row { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; font-size: 12.5px; }
+.limit-n { color: var(--muted); font-variant-numeric: tabular-nums; }
+.limit-n.full { color: var(--gold); font-weight: 700; }
+.limit-bad { color: #ff8a8a; font-weight: 600; }
+.inp.inp-bad { border-color: #ff8a8a; box-shadow: 0 0 0 3px rgba(255,138,138,.2); }

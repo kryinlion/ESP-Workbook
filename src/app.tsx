@@ -21,11 +21,27 @@ export function useRoute() {
   return r;
 }
 
+// Where the top-bar back button goes from each screen (null = a main tab screen → show the app name).
+// The project's own name lives only on Home (in the hero), so this slot is free for navigation.
+function backFor(parts: string[]): { href: string; label: string } | null {
+  const [a, b, c] = parts;
+  if (a === 'meetings' && b) return { href: '#/meetings', label: 'Meetings' };
+  if (a === 'money' && ['donation', 'expense', 'donor', 'event'].includes(b)) {
+    const tab = { donation: 'donations', expense: 'expenses', donor: 'donors', event: 'events' }[b as 'donation'];
+    return { href: `#/money/${tab}`, label: tab[0].toUpperCase() + tab.slice(1) };
+  }
+  if (a === 'decks' && b === 'meeting' && c) return { href: `#/meetings/${c}`, label: 'Meeting' };
+  if (a === 'decks' && b) return { href: '#/decks', label: 'Presentations' };
+  if (a === 'decks' || a === 'export') return { href: '#/', label: 'Home' };
+  return null;
+}
+
 export function App() {
   const route = useRoute();
   const p = useProject();
   const parts = route.split('/').filter(Boolean);
   const top = parts[0] || 'home';
+  const back = backFor(parts);
 
   let screen;
   if (top === 'home') screen = <Home />;
@@ -40,7 +56,9 @@ export function App() {
   return (
     <div class="app">
       <header class="topbar">
-        <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span>{p.values['project.title'] || 'Eagle Project'}</span></a>
+        {back
+          ? <a href={back.href} class="topback" aria-label={`Back to ${back.label}`}><span class="chev">‹</span><span>{back.label}</span></a>
+          : <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span>Eagle Project</span></a>}
         <span class={`saved ${saveState}`} aria-live="polite">{saveState === 'saving' ? 'Saving…' : 'Saved ✓'}</span>
         <a href="#/export" class="share-btn" aria-label="Export and backup">⇪</a>
       </header>

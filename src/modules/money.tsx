@@ -11,6 +11,8 @@ import { num } from '../workbook/schema';
 
 const TABS = [['', 'Overview'], ['donations', 'Donations'], ['expenses', 'Expenses'], ['donors', 'Donors'], ['events', 'Events']] as const;
 const go = (h: string) => { location.hash = h; };
+// Friday Work Shop motes: same staggered start points so no two rise together
+const MOTES = [-5.1, -11.6, -2.4, -9.3, -0.7, -13.0, -6.2, -3.9, -10.4, -7.8];
 
 export function Money({ parts }: { parts: string[] }) {
   moneyStore.use(); useProject();
@@ -33,8 +35,7 @@ export function Money({ parts }: { parts: string[] }) {
     </div>
   );
 }
-function Gone() { return <div class="page"><a class="lnk back" href="#/money">‹ Money</a><p class="muted">That item was deleted.</p></div>; }
-function Back({ to = '#/money', label = 'Money' }: { to?: string; label?: string }) { return <a class="lnk back" href={to}>‹ {label}</a>; }
+function Gone() { return <div class="page"><p class="muted">That item was deleted.</p></div>; }
 
 // ───────── Overview
 function Overview() {
@@ -43,7 +44,8 @@ function Overview() {
   const [editGoal, setEditGoal] = useState(false);
   return (
     <>
-      <section class="card mn-goal">
+      <section class="card mn-goal ws-fx">
+        {MOTES.map((d, i) => <span class={`fx-mote fx-mote-${i + 1}`} style={{ animationDelay: `${d}s` }} />)}
         <div class="mn-goal-top">
           <span class="mn-big">{money(t.raised + t.inKind)}</span>
           <span class="muted">of {t.goal ? money(t.goal) : 'no goal yet'}</span>
@@ -59,13 +61,13 @@ function Overview() {
       </section>
 
       <div class="mn-stats">
-        <div class="card"><span class="mn-k">Raised</span><b>{money(t.raised)}</b></div>
-        <div class="card"><span class="mn-k">Spent</span><b>{money(t.spent)}</b></div>
+        <div class="card ws-fx fx-raised">{MOTES.slice(0, 6).map((d, i) => <span class={`fx-mote fx-mote-${i + 1}`} style={{ animationDelay: `${d - 3}s` }} />)}<span class="mn-k">Raised</span><b>{money(t.raised)}</b></div>
+        <div class="card ws-fx fx-spent">{MOTES.slice(4, 10).map((d, i) => <span class={`fx-mote fx-mote-${i + 5}`} style={{ animationDelay: `${d - 7}s` }} />)}<span class="mn-k">Spent</span><b>{money(t.spent)}</b></div>
         <div class="card"><span class="mn-k">Balance</span><b class={t.balance < 0 ? 'neg' : ''}>{money(t.balance)}</b></div>
         <a class="card" href="#/money/donations"><span class="mn-k">Thank-yous to send</span><b class={t.thankYous.length ? 'warn-t' : ''}>{t.thankYous.length}</b></a>
       </div>
 
-      <div class="deck-actions">
+      <div class="deck-actions mn-actions">
         <button class="btn" onClick={() => go(`#/money/donation/${addDonation()}`)}>＋ Donation</button>
         <button class="btn ghost" onClick={() => go(`#/money/expense/${addExpense()}`)}>＋ Expense</button>
       </div>
@@ -241,7 +243,6 @@ function DonationEdit({ g }: { g: Donation }) {
   const inkind = g.kind === 'inkind';
   return (
     <div class="page mt-edit">
-      <Back to="#/money/donations" label="Donations" />
       <div class="sec-head"><h1>{giftLabel(g) || 'Donation'}</h1></div>
       <section class="card">
         <Pick opts={[{ id: 'money', label: '💵 Money' }, { id: 'inkind', label: '📦 Item or service' }]} value={g.kind} onChange={(k) => up({ kind: k })} />
@@ -284,7 +285,6 @@ function ExpenseEdit({ e }: { e: Expense }) {
   const calc = num(e.qty) * num(e.unit);
   return (
     <div class="page mt-edit">
-      <Back to="#/money/expenses" label="Expenses" />
       <div class="sec-head"><h1>{e.item || 'Expense'}</h1></div>
       <section class="card">
         <C label="Item"><input class="inp" value={e.item} placeholder="e.g. Cedar 4x4 posts" onInput={(x: any) => up({ item: x.target.value })} /></C>
@@ -316,7 +316,6 @@ function DonorEdit({ p }: { p: Donor }) {
   const gifts = sortedDonations().filter((g) => g.donorId === p.id);
   return (
     <div class="page mt-edit">
-      <Back to="#/money/donors" label="Donors" />
       <div class="sec-head"><h1>{p.name || 'New donor'}</h1></div>
       <section class="card">
         <C label="Name (person or business)"><input class="inp" value={p.name} autoCapitalize="words" onInput={(e: any) => up({ name: e.target.value })} /></C>
@@ -349,7 +348,6 @@ function EventEdit({ ev }: { ev: FundEvent }) {
   const raised = eventRaised(ev.id), goal = num(ev.goal);
   return (
     <div class="page mt-edit">
-      <Back to="#/money/events" label="Events" />
       <div class="sec-head"><h1>{ev.title || 'Fundraising event'}</h1></div>
       <section class="card">
         <C label="Event"><input class="inp" value={ev.title} placeholder="e.g. Pancake breakfast" autoCapitalize="sentences" onInput={(e: any) => up({ title: e.target.value })} /></C>

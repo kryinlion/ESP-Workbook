@@ -15,7 +15,7 @@ export function Meetings({ id }: { id?: string }) {
   meetingsStore.use(); timeline.use(); useProject();
   if (id) {
     const m = getMeeting(id);
-    return m ? <MeetingEdit m={m} /> : <div class="page"><a class="lnk back" href="#/meetings">‹ Meetings</a><p class="muted">That meeting was deleted.</p></div>;
+    return m ? <MeetingEdit m={m} /> : <div class="page"><p class="muted">That meeting was deleted.</p></div>;
   }
   const t = todayIso();
   const all = allMeetings();
@@ -70,7 +70,6 @@ function MeetingEdit({ m }: { m: Meeting }) {
   const future = m.date > todayIso();
   return (
     <div class="page mt-edit">
-      <a class="lnk back" href="#/meetings">‹ Meetings</a>
       <div class="sec-head"><h1>{meetingTitle(m)}</h1></div>
       <p class="muted">{longDate(m.date)}{m.time ? ` · ${time12(m.time)}` : ''}</p>
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { useProject, useValue, values } from '../core/store';
 import { type Column, type Field, HOURS_ROWS, hoursTotals, num, rowValue, tableTotal } from '../workbook/schema';
 import { Photos } from './photos';
+import { isClean } from '../core/wordFilter';
 import { SignaturePad } from './signature';
 
 export const money = (n: number) => `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -61,6 +62,30 @@ function Seg({ options, value, onChange }: { options: string[]; value?: string; 
   );
 }
 
+/** Text box with a character limit and/or word filter. A blocked word is never saved. */
+function LimitedInput({ id, value, onChange, max, clean }: { id?: string; value?: string; onChange: (v: string) => void; max?: number; clean?: boolean }) {
+  const [txt, setTxt] = useState(value ?? '');
+  const [bad, setBad] = useState(false);
+  useEffect(() => { if (!bad && value !== txt) setTxt(value ?? ''); }, [value]);
+  const n = txt.length;
+  return (
+    <>
+      <input id={id} class={`inp${bad ? ' inp-bad' : ''}`} value={txt} maxLength={max} autoCapitalize="words"
+        onInput={(e) => {
+          const t = (e.target as HTMLInputElement).value.slice(0, max ?? Infinity);
+          setTxt(t);
+          const ok = !clean || isClean(t);
+          setBad(!ok);
+          if (ok) onChange(t);
+        }} />
+      <div class="limit-row">
+        {bad ? <span class="limit-bad">Let's pick different words. This title shows on your Home screen and presentations.</span> : <span />}
+        {max ? <span class={`limit-n${n >= max ? ' full' : ''}`}>{n}/{max}</span> : null}
+      </div>
+    </>
+  );
+}
+
 export function SimpleInput({ type, value, onChange, id, placeholder }: { type: string; value: any; onChange: (v: string) => void; id?: string; placeholder?: string }) {
   const common = { id, class: 'inp', value: value ?? '', placeholder, onInput: (e: any) => onChange(e.target.value) };
   switch (type) {
@@ -95,7 +120,9 @@ export function FieldView({ f, showLabel }: { f: Field; showLabel: boolean }) {
     default:
       if (f.id === 'cand.name') return <NameEcho label="Name" from="cand.fullName" />;
       if (f.id === 'rep.benOrg') return <NameEcho label={f.label} from="ben.org" />;
-      body = <SimpleInput id={id} type={f.type} value={v} onChange={set} />;
+      body = f.max || f.clean
+        ? <LimitedInput id={id} value={v} onChange={set} max={f.max} clean={f.clean} />
+        : <SimpleInput id={id} type={f.type} value={v} onChange={set} />;
   }
   return <div class={`field t-${f.type}${f.half ? ' half' : ''}`}>{label}{prompt}{body}{hint}</div>;
 }

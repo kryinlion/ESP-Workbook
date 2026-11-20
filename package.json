@@ -10,7 +10,8 @@
     "test:pdf": "rolldown scripts/test-pdf.ts --platform node --format esm -o scripts/out/test-pdf.mjs && node scripts/out/test-pdf.mjs",
     "test:rules": "firebase emulators:exec --project demo-esp --only firestore,storage \"node scripts/rules-test.mjs\"",
     "test:scrub": "rolldown scripts/scrub-test.ts --platform node --format esm -o scripts/out/scrub-test.mjs && node scripts/out/scrub-test.mjs",
-    "test:sync": "rolldown scripts/sync-test.ts --platform node --format esm -o scripts/out/sync-test.mjs && node scripts/out/sync-test.mjs"
+    "test:sync": "rolldown scripts/sync-test.ts --platform node --format esm -o scripts/out/sync-test.mjs && node scripts/out/sync-test.mjs",
+    "test:filter": "rolldown scripts/filter-test.ts --platform node --format esm -o scripts/out/filter-test.mjs && node scripts/out/filter-test.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",
