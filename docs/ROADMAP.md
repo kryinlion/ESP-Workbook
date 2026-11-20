@@ -23,6 +23,10 @@ Ideas to discuss:
 - Replace ⇪ with a clear "More" tab (Presentations · Backup & sync · Settings · Help/Tour) or a labeled menu.
 - iOS-style back button in the top bar on every sub-screen (+ title of where you are).
 - Workbook: "Continue where you left off" + "Next section →" at the bottom of each section.
+Tutorial progress (2026-11-20): ✅ welcome cards + 8-step Home spotlight tour + "?" button with starter
+"What's next?" slider (`src/tour/`; seen-state in localStorage `esp.tour`). ✅ Top bar: project name on Home
+(auto-fit), back button everywhere else. NEXT: first quests + celebrations → one-time screen tips → design the "?"
+next-step logic together with Mark (his idea: slider from the side the button is on, showing what to do next).
 Tutorial ideas:
 - First-run welcome (2–3 cards): what the app does, it saves itself, private info stays on the phone.
 - Guided tour: spotlight + animated pointer bubble on each tab/key button, "Next / Skip", replay from Help.
