@@ -7,6 +7,8 @@ import { flushAllDocStores } from '../core/docstore';
 // mid-sentence. Everything is saved first; the new version then makes a safety copy on startup.
 let ready = false;
 let apply: ((reload?: boolean) => Promise<void>) | null = null;
+let regRef: ServiceWorkerRegistration | undefined;
+const showIfWaiting = () => { if (regRef?.waiting && !ready) { ready = true; emit(); } };
 const subs = new Set<() => void>();
 const emit = () => subs.forEach((f) => f());
 
@@ -16,11 +18,28 @@ export function startUpdateWatch() {
     onNeedRefresh() { ready = true; emit(); },
     onRegisteredSW(_url, reg) {
       // check for a new version every hour while the app is open, and whenever it comes back to the front
+      // (a version already downloaded and waiting re-shows the banner even if × was tapped earlier)
       if (!reg) return;
-      setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000);
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
+      regRef = reg;
+      showIfWaiting();
+      setInterval(() => { showIfWaiting(); reg.update().catch(() => {}); }, 60 * 60 * 1000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) { showIfWaiting(); reg.update().catch(() => {}); } });
     },
   });
+}
+
+/** Export & Backup → "Check for updates". Resolves 'ready' (banner shown), 'current', or 'offline'. */
+export async function checkForUpdate(): Promise<'ready' | 'current' | 'offline'> {
+  if (!regRef) return 'offline';
+  try { await regRef.update(); } catch { return 'offline'; }
+  // a found update takes a moment to download before it is "waiting"
+  for (let i = 0; i < 20 && (regRef.installing || !regRef.waiting); i++) {
+    if (regRef.waiting) break;
+    if (!regRef.installing && i > 2) break;
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  if (regRef.waiting) { ready = true; emit(); return 'ready'; }
+  return 'current';
 }
 
 export function UpdateBanner() {
