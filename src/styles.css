@@ -545,14 +545,11 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .ws-fx .lnk-btn { color: rgb(var(--fx)); text-shadow: 0 0 6px rgba(var(--fx),0.45); }
 .ws-fx .mn-k { color: rgb(var(--fx)); opacity: .9; }
 
-/* Raised / Spent boxes — Version A: cyan family (raised leans green, spent leans red) */
-.fx-raised { --fx: 72,240,196;  --fx-hi: 215,255,242; --fx-tint: 9,40,38; }
-.fx-spent  { --fx: 150,190,255; --fx-hi: 236,226,255; --fx-tint: 30,30,52; }
-/* Version B: true green / red, toned down so they don't overpower */
-.fxb .fx-raised { --fx: 78,224,160;  --fx-hi: 200,255,225; --fx-tint: 12,36,28; }
-.fxb .fx-spent  { --fx: 255,110,110; --fx-hi: 255,215,215; --fx-tint: 44,20,22; }
-.fxb .fx-raised, .fxb .fx-spent { animation-duration: 18s; }
-.fxb .fx-raised .fx-mote, .fxb .fx-spent .fx-mote { opacity: .6; }
+/* Raised / Spent boxes — green / red, toned down so they don't overpower (Mark picked 2026-11-20) */
+.fx-raised { --fx: 78,224,160;  --fx-hi: 200,255,225; --fx-tint: 12,36,28; }
+.fx-spent  { --fx: 255,110,110; --fx-hi: 255,215,215; --fx-tint: 44,20,22; }
+.fx-raised, .fx-spent { animation-duration: 18s; }
+.fx-raised .fx-mote, .fx-spent .fx-mote { opacity: .6; }
 
 /* top bar back button (project name now lives only on Home) */
 .topback { display: flex; align-items: center; gap: 2px; min-width: 0; flex: 1; font-weight: 650; font-size: 17px; color: #f0c75a; padding: 6px 0; }
