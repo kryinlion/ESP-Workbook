@@ -11,6 +11,9 @@ import { moneyStore, totals } from '../money/model';
 import { money } from '../ui/fields';
 import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus, timeline, todayIso } from '../timeline/model';
 
+// Where each tile's icon starts in its 60 s glow cycle (negative = already part-way through), scattered so no two pulse together.
+const GLOW_AT = [0, -37, -14, -51, -23, -6];
+
 export function Home() {
   const p = useProject();
   const gridRef = useRef<HTMLDivElement>(null);
@@ -49,11 +52,11 @@ export function Home() {
 
       <h2 class="h2">Workbook</h2>
       <div class="sec-grid" ref={gridRef}>
-        {SECTIONS.map((s) => {
+        {SECTIONS.map((s, i) => {
           const sp = sectionProgress(s, v);
           return (
             <a href={`#/workbook/${s.id}`} class={`sec-tile holo${sp.pct >= 100 ? ' done' : ''}`}>
-              <span class="sec-ico">{s.icon + '\uFE0E'}</span>
+              <span class="sec-ico" style={{ '--glow-at': `${GLOW_AT[i % GLOW_AT.length]}s` } as any}>{s.icon + '\uFE0E'}</span>
               <span class="sec-name">{s.title.split(' ').map((w) => <span class="w">{w}</span>)}</span>
               <span class="sec-pages">{s.pages}</span>
               <span class="bar"><span style={{ width: `${sp.pct}%` }} /></span>

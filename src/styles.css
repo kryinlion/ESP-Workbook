@@ -479,7 +479,15 @@ select.inp { appearance: none; -webkit-appearance: none; }
 }
 @keyframes holo-sweep { 0%, 55% { transform: translateX(-60%); } 100% { transform: translateX(60%); } }
 @media (prefers-reduced-motion: reduce) { .sec-tile.holo::before { animation: none; } }
-.sec-tile.holo .sec-ico { grid-area: ico; grid-row: 1 / 3; font-size: 60px; line-height: 1; color: var(--muted); text-shadow: 0 0 10px color-mix(in srgb, var(--muted) 55%, transparent); align-self: start; justify-self: end; }
+.sec-tile.holo .sec-ico {
+  grid-area: ico; grid-row: 1 / 3; font-size: 40px; line-height: 1; color: var(--muted); align-self: start; justify-self: end;
+  --glow: color-mix(in srgb, var(--muted) 55%, transparent);
+  text-shadow: 0 0 10px var(--glow);
+  /* glow breathes: nothing → today's peak → nothing over 1 minute; each tile starts at a different point */
+  animation: ico-glow 60s ease-in-out infinite; animation-delay: var(--glow-at, 0s);
+}
+@keyframes ico-glow { 0%, 100% { text-shadow: 0 0 10px transparent; } 50% { text-shadow: 0 0 10px var(--glow); } }
+@media (prefers-reduced-motion: reduce) { .sec-tile.holo .sec-ico { animation: none; } }
 .sec-tile.holo .sec-name { grid-area: name; display: flex; flex-direction: column; line-height: 1.2; }
 .sec-tile.holo .sec-pages { grid-area: pages; }
 .sec-tile.holo .bar { grid-area: bar; margin-top: 6px; }
