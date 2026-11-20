@@ -20,6 +20,7 @@ import { scrubValues, mergeRestore, scrubMoney, mergeMoney, DONOR_REENTER } from
 import { allDocs, allMedia, putDoc, putMedia } from '../core/db';
 import { flush, loadProject } from '../core/store';
 import { flushAllDocStores, loadAllDocStores } from '../core/docstore';
+import { DATA_VERSION, migrateDocs, safetyCopy } from '../core/upgrade';
 
 const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] });
@@ -122,7 +123,7 @@ export async function backupToCloud(force = false): Promise<'done' | 'unchanged'
       const name = `${m.id}.${ext(m.type)}`;
       if (!have.has(name)) await uploadBytes(ref(storage, `users/${uid}/media/${name}`), m.blob, { contentType: m.type });
     }
-    const payload = JSON.stringify({ app: 'esp', format: 1, createdAt: new Date().toISOString(), docs: cloudDocs, media: mediaMeta });
+    const payload = JSON.stringify({ app: 'esp', format: 1, dataVersion: DATA_VERSION, createdAt: new Date().toISOString(), docs: cloudDocs, media: mediaMeta });
     const blob = new Blob([payload], { type: 'application/json' });
     await uploadBytes(ref(storage, `users/${uid}/backup/latest.json`), blob, { contentType: 'application/json' });
     await uploadBytes(ref(storage, `users/${uid}/backup/days/${today()}.json`), blob, { contentType: 'application/json' });
@@ -164,6 +165,8 @@ export async function restoreFromCloud(): Promise<string[]> {
     await flush(); await flushAllDocStores();
     const j = JSON.parse(new TextDecoder().decode(await getBytes(ref(storage, `users/${uid}/backup/latest.json`))));
     if (j.app !== 'esp') throw new Error('The cloud backup is not an Eagle Project backup.');
+    j.docs = migrateDocs(j.docs, j.dataVersion ?? 1).docs; // older cloud copy → today's format
+    await safetyCopy();                                      // undo-able from Export → Safety copies
     const local: Record<string, any> = await allDocs();
     const have = new Set((await allMedia()).map((m) => m.id));
     for (const m of j.media || []) {

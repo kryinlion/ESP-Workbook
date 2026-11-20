@@ -4,6 +4,7 @@ import { clearAll, getMedia } from '../core/db';
 import { restoreBackup, shareOrDownload } from '../core/backup';
 import { openBackup } from '../ui/backupPrompt';
 import { CloudCard } from '../ui/cloudCard';
+import { SafetyCopies } from '../ui/safetyCopies';
 
 const safe = (s: string) => (s || '').replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40);
 
@@ -75,6 +76,8 @@ export function ExportScreen() {
       </section>
 
       {msg && <p class={`toast ${msg.startsWith('⚠') ? 'bad' : ''}`}>{msg}</p>}
+
+      <SafetyCopies />
 
       <section class="card">
         <h2>Start over on this device</h2>

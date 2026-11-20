@@ -4,10 +4,12 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   base: './',
+  // Each build gets an id; a new id on startup = a new version → safety copy first (src/core/upgrade.ts)
+  define: { __APP_BUILD__: JSON.stringify(new Date().toISOString()) },
   plugins: [
     preact(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt', // new versions wait for "Update ready — tap to refresh" (src/ui/updatePrompt.tsx)
       includeAssets: ['workbook-512-927.pdf', 'icons/*.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg,pdf,woff2}'],

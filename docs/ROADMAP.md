@@ -118,12 +118,17 @@ Rules to keep it that way:
    (`createDocStore(key, blank, migrate)` / `loadProject`) that upgrades old data in place. Migrations
    only add/transform — never drop user data.
 3. **Never change the IndexedDB name (`esp`)** or delete object stores; bump the DB version only to ADD stores.
-4. **Auto safety snapshot before a migration**: when the app starts on a new version whose schema is newer
-   than the stored data, it first writes a local snapshot (and a cloud backup once P6a exists) — TODO.
-5. **Test every release against old data**: keep `scripts/fixtures/` sample backups from each version;
-   restore them into the new build and check nothing is lost (`npm run test:pdf` + a restore check) — TODO.
-6. **Update prompt**: show "Update ready — tap to refresh" instead of silently swapping code mid-edit;
-   the app flushes saves before reloading — TODO (currently auto-updates on next launch).
+4. ✅ **Auto safety copy** (`src/core/upgrade.ts`, 2026-11-20): the first start of every new build — and every
+   data upgrade, file restore and cloud restore — saves all answers to `_snap_<time>` first (newest 3 kept).
+   Export & Backup → **Safety copies** → Roll back. Photos are never touched by updates.
+5. ✅ **Test every release against old data**: `npm run test:upgrade` runs every saved sample backup
+   (`scripts/fixtures/v1-backup.json`, fake names) through every migration and fails if any answer is lost
+   (self-checks prove it catches a dropping migration). **How to change the data shape:** add a `MIGRATIONS`
+   entry `{ to: N+1, run }` in upgrade.ts, bump `DATA_VERSION`, add `scripts/fixtures/v(N+1)-backup.json`, run
+   `npm test` (upgrade + privacy + sync + word filter). Backups/cloud copies carry `dataVersion` and are upgraded on restore.
+6. ✅ **Update prompt** (`src/ui/updatePrompt.tsx`, PWA registerType 'prompt'): "✨ Update ready · Tap to
+   refresh" — saves everything, then reloads onto the new version. Checks hourly + whenever the app comes back to
+   the front. (The very first switch from the old auto-update build happens automatically once.)
 7. **Bug-fix flow**: reproduce with Colin's backup file (placeholdered copy is fine) on desktop
    preview → fix → test restore of that file → commit → Mark pushes → app updates on next open.
 8. Never clear site data / "Erase" as a fix. Erase is for testing only.

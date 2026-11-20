@@ -7,6 +7,8 @@ import './timeline/model';
 import './meetings/model';
 import './money/model';
 import { autoStartCloud } from './ui/cloudCard';
+import { prepareData } from './core/upgrade';
+import { startUpdateWatch } from './ui/updatePrompt';
 import './styles.css';
 
 // Preview hooks (used by preview.html device frames):
@@ -20,8 +22,10 @@ if (frame === 'phone') { document.documentElement.style.setProperty('--safe-t', 
 if (frame === 'se') document.documentElement.style.setProperty('--safe-t', '20px');
 if (frame === 'tablet') { document.documentElement.style.setProperty('--safe-t', '24px'); document.documentElement.style.setProperty('--safe-b', '18px'); }
 
-Promise.all([loadProject(), loadAllDocStores()]).then(() => {
+// Safety copy + any data upgrade run BEFORE anything reads the data.
+prepareData().then(() => Promise.all([loadProject(), loadAllDocStores()])).then(() => {
   render(<App />, document.getElementById('app')!);
   persistStorage();
   autoStartCloud();
+  startUpdateWatch();
 });

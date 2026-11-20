@@ -1,0 +1,184 @@
+{
+ "app": "esp",
+ "format": 1,
+ "dataVersion": 1,
+ "note": "Sample data in the v1 format (fake names). Never edit; add vN files for newer formats.",
+ "docs": {
+  "project": {
+   "schema": 1,
+   "id": "fixture-project",
+   "updatedAt": 1795000000000,
+   "meta": {
+    "createdAt": 1794000000000,
+    "lastBackupAt": 1795000000000
+   },
+   "values": {
+    "cand.fullName": "Sample Scout",
+    "project.title": "Bench Build at Lakeside",
+    "cand.street": "1 Test Way",
+    "cand.city": "Testville",
+    "cand.state": "MI",
+    "cand.email": "scout@example.com",
+    "cand.phone": "555-0100",
+    "cand.birth": "2010-01-02",
+    "unit.type": "Troop",
+    "unit.number": "99",
+    "sm.name": "Sample Scoutmaster",
+    "sm.email": "sm@example.com",
+    "ben.org": "Lakeside Park",
+    "prop.beneficiary": "Lakeside Park needs benches.",
+    "prop.description": "Build four benches.",
+    "prop.dateApproved": "2026-12-01",
+    "prop.costMaterials": "300",
+    "prop.needFundApp": "No",
+    "plan.steps": [
+     {
+      "step": "Buy lumber",
+      "duration": "1 day"
+     },
+     {
+      "step": "Build",
+      "duration": "2 days"
+     }
+    ],
+    "plan.materials": [
+     {
+      "item": "Cedar",
+      "desc": "2x6",
+      "qty": "10",
+      "unit": "12",
+      "source": "Store"
+     }
+    ],
+    "hours.proposal": {
+     "cand": {
+      "h": "8"
+     },
+     "ryouth": {
+      "n": "2",
+      "h": "4"
+     }
+    },
+    "appr.candSig": {
+     "typed": "Sample Scout",
+     "date": "2026-12-01"
+    },
+    "checklist": {
+     "0": true,
+     "1": true,
+     "4": true
+    },
+    "project.cover": [
+     {
+      "id": "media-1",
+      "caption": "Site",
+      "addedAt": 1
+     }
+    ]
+   }
+  },
+  "timeline": {
+   "schema": 1,
+   "tasks": [
+    {
+     "id": "t1",
+     "title": "Call the park",
+     "due": "2026-12-05",
+     "status": "todo",
+     "phase": "plan",
+     "createdAt": 1
+    },
+    {
+     "id": "t2",
+     "title": "Agenda item",
+     "status": "done",
+     "phase": "other",
+     "meetingId": "m1",
+     "createdAt": 2,
+     "doneAt": 3
+    }
+   ],
+   "checklist": {
+    "5": {
+     "due": "2026-12-10",
+     "owner": "Sample Scout"
+    }
+   }
+  },
+  "meetings": {
+   "schema": 1,
+   "meetings": [
+    {
+     "id": "m1",
+     "date": "2026-11-30",
+     "time": "18:30",
+     "kind": "coach",
+     "where": "Hall",
+     "roles": [
+      "coach",
+      "sm"
+     ],
+     "others": "Alex",
+     "agenda": "Budget\nSigners",
+     "notes": "Coach liked it.",
+     "decisions": [
+      "Use cedar"
+     ],
+     "photos": [],
+     "createdAt": 1
+    }
+   ]
+  },
+  "money": {
+   "schema": 1,
+   "goal": "500",
+   "donors": [
+    {
+     "id": "d1",
+     "name": "Sample Lumber Co",
+     "email": "sales@example.com",
+     "createdAt": 1
+    }
+   ],
+   "donations": [
+    {
+     "id": "g1",
+     "date": "2026-11-20",
+     "donorId": "d1",
+     "kind": "money",
+     "amount": "100",
+     "from": "others",
+     "method": "check",
+     "heldBy": "Treasurer",
+     "thanked": true,
+     "thankedOn": "2026-11-21",
+     "photos": [],
+     "createdAt": 1
+    }
+   ],
+   "expenses": [
+    {
+     "id": "x1",
+     "date": "2026-11-22",
+     "item": "Screws",
+     "qty": "2",
+     "unit": "5",
+     "total": "",
+     "vendor": "Store",
+     "category": "supplies",
+     "photos": [],
+     "createdAt": 1
+    }
+   ],
+   "events": [
+    {
+     "id": "e1",
+     "title": "Car wash",
+     "date": "2026-12-12",
+     "goal": "200",
+     "createdAt": 1
+    }
+   ]
+  }
+ }
+}

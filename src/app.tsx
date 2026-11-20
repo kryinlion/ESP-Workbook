@@ -14,6 +14,7 @@ import { ScreenTips, TourOverlay, Welcome, startTour } from './tour/tour';
 import { HOME_TOUR, SCREEN_TIPS } from './tour/tours';
 import { HelpButton, HelpPanel } from './tour/help';
 import { QuestCelebrate } from './tour/quests';
+import { UpdateBanner } from './ui/updatePrompt';
 
 export function useRoute() {
   const [r, setR] = useState(location.hash.slice(1) || '/');
@@ -86,6 +87,7 @@ export function App() {
       <Welcome onTour={() => startTour(HOME_TOUR)} />
       <TourOverlay />
       <QuestCelebrate />
+      <UpdateBanner />
       <ScreenTips screen={parts.length === 1 || (top === 'workbook' && parts.length >= 2) || (top === 'timeline') ? top : ''} tips={SCREEN_TIPS} />
       <nav class="tabbar">
         {MODULES.filter((m) => m.tab).map((m) => (

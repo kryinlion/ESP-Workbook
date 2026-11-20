@@ -1,7 +1,9 @@
 import JSZip from 'jszip';
-import { allDocs, allMedia, clearAll, putDoc, putMedia } from './db';
+import { allDocs, allMedia, putDoc, putMedia } from './db';
 import { flush, loadProject, setMeta } from './store';
 import { flushAllDocStores, loadAllDocStores } from './docstore';
+import { DATA_VERSION, migrateDocs, safetyCopy } from './upgrade';
+import { db } from './db';
 
 // Backup = one .zip containing every module's documents + all images.
 // Format is deliberately simple so future sync / native builds can read it.
@@ -11,7 +13,7 @@ export async function makeBackup(): Promise<File> {
   const zip = new JSZip();
   const docs = await allDocs();
   const media = await allMedia();
-  zip.file('manifest.json', JSON.stringify({ app: 'esp', format: 1, createdAt: new Date().toISOString(), docs: Object.keys(docs), media: media.length }, null, 2));
+  zip.file('manifest.json', JSON.stringify({ app: 'esp', format: 1, dataVersion: DATA_VERSION, createdAt: new Date().toISOString(), docs: Object.keys(docs), media: media.length }, null, 2));
   zip.file('docs.json', JSON.stringify(docs));
   const meta: any[] = [];
   for (const m of media) {
@@ -49,9 +51,15 @@ export async function restoreBackup(file: File) {
   const zip = await JSZip.loadAsync(file);
   const man = zip.file('manifest.json');
   if (!man) throw new Error("That file isn't an Eagle Project backup.");
-  const docs = JSON.parse(await zip.file('docs.json')!.async('string'));
+  const manifest = JSON.parse(await man.async('string'));
+  // an older backup is brought up to today's format before it's written (never loses answers)
+  const docs = migrateDocs(JSON.parse(await zip.file('docs.json')!.async('string')), manifest.dataVersion ?? 1).docs;
   const meta = JSON.parse(await zip.file('media.json')!.async('string'));
-  await clearAll();
+  await safetyCopy();                       // what was here before can be brought back (Export → Safety copies)
+  // clear answers + photos, but keep device bookkeeping (safety copies, sync state, version)
+  const d = await db();
+  for (const k of await d.getAllKeys('docs')) if (!String(k).startsWith('_')) await d.delete('docs', k);
+  await d.clear('media');
   for (const [k, v] of Object.entries(docs)) await putDoc(k, v);
   for (const m of meta) {
     const data = await zip.file(m.file)!.async('blob');
