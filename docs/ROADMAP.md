@@ -25,8 +25,8 @@ Ideas to discuss:
 - Workbook: "Continue where you left off" + "Next section →" at the bottom of each section.
 Tutorial progress (2026-11-20): ✅ welcome cards + 8-step Home spotlight tour + "?" button with starter
 "What's next?" slider (`src/tour/`; seen-state in localStorage `esp.tour`). ✅ Top bar: project name on Home
-(auto-fit), back button everywhere else. ✅ First quests + celebrations (Scouting-color confetti). ✅ One-time screen tips (`SCREEN_TIPS` in src/tour/tours.ts). NEXT: design the "?"
-next-step logic together with Mark (his idea: slider from the side the button is on, showing what to do next).
+(auto-fit), back button everywhere else. ✅ First quests + celebrations (Scouting-color confetti). ✅ One-time screen tips (`SCREEN_TIPS` in src/tour/tours.ts). ✅ "What's next?" panel (`src/tour/next.ts`):
+one big + 3 more, screen-aware (Home = urgency only), red badge when urgent, Go → first empty box. Tutorial DONE.
 Tutorial ideas:
 - First-run welcome (2–3 cards): what the app does, it saves itself, private info stays on the phone.
 - Guided tour: spotlight + animated pointer bubble on each tab/key button, "Next / Skip", replay from Help.
