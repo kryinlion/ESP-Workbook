@@ -21,6 +21,8 @@ export const BANDS: Record<string, (Band | undefined)[]> = {
   plan: ['line:tan', 'line:darkblue', 'red', 'green', 'green', 'paleblue', 'red', 'line:green', 'line:green',
     'fx:cyan', 'line:green', 'line:paleblue', 'red', 'fx:raised'],
   proposal: ['darkblue', 'red', 'red', 'green', 'darkblue', 'tan', 'darkblue', 'paleblue', 'green', 'green', 'red', 'tan'],
+  // Reflections, Time, Funds Spent, Acknowledgment, AI, Photos & Documents, Candidate's Promise, Acceptance
+  report: ['green', 'paleblue', 'fx:raised', 'line:green', 'line:paleblue', 'darkblue', 'green', 'tan'],
 };
 
 export const bandOf = (sectionId: string, groupIndex: number): Band | undefined => BANDS[sectionId]?.[groupIndex];
