@@ -34,7 +34,7 @@ All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mar
 - Billing: Google Cloud **free trial** ($300 credit, 90 days). ⏰ **Before ~2027-02-10**, Mark activates the full
   pay-as-you-go account (Cloud Billing → Activate) or backups/photo storage stop when the trial ends (~2027-02-17).
   Usage should stay inside the always-free tier (≈$0/mo). $1 budget alert: Cloud Billing → Budgets & alerts.
-- API key: public by design (GitHub secret-scanning alert 2026-11-19 = expected; close as "Won't fix"). Recommended:
+- API key: public by design (GitHub secret-scanning alert 2026-11-19 = expected; close as "Won't fix"). ✅ DONE 2026-11-19 (verified: other sites + no-referer → 403, app address → allowed):
   Cloud Console → Credentials → Browser key → Application restrictions → Websites: `kryinlion.github.io/*` +
   `eagle-scout-project-beaa1.firebaseapp.com/*`. A friend using the same app URL is unaffected (restriction = address, not person).
   New web address or native app → add it to the list.
