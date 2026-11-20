@@ -36,8 +36,8 @@ export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?:
         <span class="muted">Workbook {s.pages} · {sp.done}/{sp.total} answered</span>
         <span class="bar"><span style={{ width: `${sp.pct}%` }} /></span>
       </div>
-      {s.groups.map((g) => (
-        <section class="card group">
+      {s.groups.map((g, gi) => (
+        <section class="card group" data-g={`${s.id}-${gi}`}>
           {g.title && <h2>{g.title}</h2>}
           {g.intro && <p class="intro">{g.intro}</p>}
           <div class="fields">
