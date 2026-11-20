@@ -25,7 +25,7 @@
 :root[data-theme='dark'] { --bg: #0b141d; --card: #13212f; --ink: #e9edf1; --muted: #93a0ad; --line: #24384b; --field: #0f1b27; --gold-soft: #3a3220; color-scheme: dark; }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; background: var(--bg); color: var(--ink); }
+html, body { margin: 0; background: var(--bg); color: var(--ink); overflow-x: clip; } /* the page never slides sideways */
 body { font: 16px/1.45 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
 a { color: inherit; text-decoration: none; }
 h1, h2, h3 { margin: 0; line-height: 1.2; }

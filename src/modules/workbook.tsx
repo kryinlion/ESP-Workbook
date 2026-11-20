@@ -13,7 +13,13 @@ export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?:
   const s = SECTIONS[idx];
   const sp = sectionProgress(s, p.values);
   const chips = useRef<HTMLDivElement>(null);
-  useEffect(() => { chips.current?.querySelector('.on')?.scrollIntoView({ inline: 'center', block: 'nearest' }); }, [idx]);
+  // center the current tab in the strip by scrolling ONLY the strip (scrollIntoView also slid the whole page sideways)
+  useEffect(() => {
+    const c = chips.current, on = c?.querySelector<HTMLElement>('.on');
+    if (!c || !on) return;
+    const cr = c.getBoundingClientRect(), r = on.getBoundingClientRect();
+    c.scrollLeft += r.left - cr.left - (cr.width - r.width) / 2;
+  }, [idx]);
   // "Go" from the ? panel lands on a specific box: scroll to it and glow it briefly
   useEffect(() => {
     if (!focusId) return;
