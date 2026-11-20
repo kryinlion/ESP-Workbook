@@ -13,6 +13,7 @@ import { BackupPrompt } from './ui/backupPrompt';
 import { TourOverlay, Welcome, startTour } from './tour/tour';
 import { HOME_TOUR } from './tour/tours';
 import { HelpButton, HelpPanel } from './tour/help';
+import { QuestCelebrate } from './tour/quests';
 
 export function useRoute() {
   const [r, setR] = useState(location.hash.slice(1) || '/');
@@ -84,6 +85,7 @@ export function App() {
       <HelpPanel />
       <Welcome onTour={() => startTour(HOME_TOUR)} />
       <TourOverlay />
+      <QuestCelebrate />
       <nav class="tabbar">
         {MODULES.filter((m) => m.tab).map((m) => (
           <a href={`#/${m.id === 'home' ? '' : m.id}`} class={top === m.id ? 'on' : ''} data-tour={`tab-${m.id}`}>

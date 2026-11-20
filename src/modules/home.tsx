@@ -7,6 +7,7 @@ import { MODULES } from './registry';
 import { Hero } from '../ui/hero';
 import { openBackup, backupEveryDays } from '../ui/backupPrompt';
 import { ReenterCard } from '../ui/cloudCard';
+import { QuestCard } from '../tour/quests';
 import { moneyStore, totals } from '../money/model';
 import { money } from '../ui/fields';
 import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus, timeline, todayIso } from '../timeline/model';
@@ -45,6 +46,8 @@ export function Home() {
       } />
 
       <ReenterCard />
+
+      <QuestCard />
 
       {(days === null || days >= backupEveryDays()) && (
         <button type="button" class="card warn bk-card" onClick={openBackup}>
