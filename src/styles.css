@@ -766,5 +766,10 @@ select.inp { appearance: none; -webkit-appearance: none; }
   border-color: rgba(var(--band),0.55); box-shadow: 0 0 12px rgba(var(--band),0.16), inset 0 0 10px rgba(var(--band),0.05);
 }
 .group.band-paleblue > h2, .group.band-tan > h2 { color: #1d2733; }
+/* left-edge line style (like Timeline checklist rows) */
+.card.group.edge { border-color: var(--line); border-left: 4px solid rgb(var(--band)); box-shadow: none; }
+.card.group.edge > h2 { color: inherit; }
+/* workbook boxes using the Money page effects: keep the effect's box, the heading sits above the motes */
+.group.ws-fx > h2, .group.ws-fx > .intro, .group.ws-fx > .fields { position: relative; z-index: 1; }
 /* Photos & Drawings: extra room so the tan band doesn't touch the green Add button */
 .group[data-g="proposal-11"] > h2 { margin-bottom: 22px; }

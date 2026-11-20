@@ -3,7 +3,9 @@ import { useProject } from '../core/store';
 import { SECTIONS } from '../workbook/schema';
 import { sectionProgress } from '../workbook/progress';
 import { FieldView } from '../ui/fields';
-import { bandOf } from '../workbook/bands';
+import { bandOf, bandClass } from '../workbook/bands';
+
+const MOTES = [-5.1, -11.6, -2.4, -9.3, -0.7, -13.0, -6.2, -3.9, -10.4, -7.8];
 
 export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?: string }) {
   const p = useProject();
@@ -37,15 +39,16 @@ export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?:
         <span class="muted">Workbook {s.pages} · {sp.done}/{sp.total} answered</span>
         <span class="bar"><span style={{ width: `${sp.pct}%` }} /></span>
       </div>
-      {s.groups.map((g, gi) => (
-        <section class={`card group${g.title && bandOf(s.id, gi) ? ` band band-${bandOf(s.id, gi)}` : ''}`} data-g={`${s.id}-${gi}`}>
+      {s.groups.map((g, gi) => { const b = g.title ? bandOf(s.id, gi) : undefined; return (
+        <section class={`card group${bandClass(b)}`} data-g={`${s.id}-${gi}`}>
+          {b?.startsWith('fx:') && MOTES.map((d, i) => <span class={`fx-mote fx-mote-${i + 1}`} style={{ animationDelay: `${d}s` }} />)}
           {g.title && <h2>{g.title}</h2>}
           {g.intro && <p class="intro">{g.intro}</p>}
           <div class="fields">
             {g.fields.map((f) => <FieldView f={f} showLabel={g.fields.length > 1 || !g.title} />)}
           </div>
         </section>
-      ))}
+      ); })}
       <div class="pager">
         {prev ? <a class="btn ghost" href={`#/workbook/${prev.id}`}>← {prev.short}</a> : <span />}
         {next ? <a class="btn" href={`#/workbook/${next.id}`}>{next.short} →</a> : <a class="btn" href="#/export">Export →</a>}
