@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import { useProject } from '../core/store';
 import { SECTIONS, CHECKLIST } from '../workbook/schema';
 import { overallProgress, sectionProgress } from '../workbook/progress';
@@ -12,6 +13,8 @@ import { addDays, allItems, deadline18, daysBetween, phaseOf, relDay, setStatus,
 
 export function Home() {
   const p = useProject();
+  const gridRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => { if (gridRef.current) alignTileIcons(gridRef.current); });
   const v = p.values;
   const all = overallProgress(v);
   const ck = (v.checklist || {}) as Record<number, boolean>;
@@ -45,13 +48,13 @@ export function Home() {
       <DueSoon />
 
       <h2 class="h2">Workbook</h2>
-      <div class="sec-grid">
+      <div class="sec-grid" ref={gridRef}>
         {SECTIONS.map((s) => {
           const sp = sectionProgress(s, v);
           return (
-            <a href={`#/workbook/${s.id}`} class="sec-tile">
-              <span class="sec-ico">{s.icon}</span>
-              <span class="sec-name">{s.title}</span>
+            <a href={`#/workbook/${s.id}`} class={`sec-tile holo${sp.pct >= 100 ? ' done' : ''}`}>
+              <span class="sec-ico">{s.icon + '\uFE0E'}</span>
+              <span class="sec-name">{s.title.split(' ').map((w) => <span class="w">{w}</span>)}</span>
               <span class="sec-pages">{s.pages}</span>
               <span class="bar"><span style={{ width: `${sp.pct}%` }} /></span>
               <span class="sec-pct">{sp.pct}%</span>
@@ -136,4 +139,29 @@ function MoneyCard() {
       </span>
     </a>
   );
+}
+
+// Line each big tile icon's INK top up with the top of the title letters. Glyphs carry different
+// empty space above them (and iOS fonts differ from desktop), so measure the real ink on-device.
+let mctx: CanvasRenderingContext2D | null = null;
+function inkTop(el: HTMLElement, text: string): number {
+  const cs = getComputedStyle(el);
+  mctx ??= document.createElement('canvas').getContext('2d')!;
+  mctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  const m = mctx.measureText(text);
+  const size = parseFloat(cs.fontSize);
+  const lh = cs.lineHeight === 'normal' ? size * 1.2 : parseFloat(cs.lineHeight);
+  const A = m.fontBoundingBoxAscent ?? size * 0.8, D = m.fontBoundingBoxDescent ?? size * 0.2;
+  return (lh - (A + D)) / 2 + A - m.actualBoundingBoxAscent; // px from the line box top to the first inked pixel
+}
+function alignTileIcons(grid: HTMLElement) {
+  grid.querySelectorAll<HTMLElement>('.sec-tile.holo').forEach((tile) => {
+    const ico = tile.querySelector<HTMLElement>('.sec-ico');
+    const w = tile.querySelector<HTMLElement>('.sec-name .w');
+    if (!ico || !w) return;
+    ico.style.marginTop = '0px';
+    const titleInk = w.getBoundingClientRect().top + inkTop(w, w.textContent || 'A');
+    const iconInk = ico.getBoundingClientRect().top + inkTop(ico, ico.textContent || '');
+    ico.style.marginTop = `${Math.round((titleInk - iconInk) * 10) / 10}px`;
+  });
 }

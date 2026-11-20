@@ -2,19 +2,19 @@
   --navy: #0f1d2b;
   --navy-2: #1a2f45;
   --gold: #d6ab38;
-  --gold-soft: #f3e6bf;
+  --gold-soft: #6b5f3a;
   --green: #2f6b58;
-  --bg: #f4f1ea;
-  --card: #ffffff;
-  --ink: #17212b;
-  --muted: #66717d;
-  --line: #e2ddd2;
-  --field: #faf8f4;
+  --bg: #808080;
+  --card: #4d4d4d;
+  --ink: #f2f2f2;
+  --muted: #d0d0d0;
+  --line: #666666;
+  --field: #5a5a5a;
   --danger: #b23a3a;
   --radius: 14px;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
-  color-scheme: light;
+  color-scheme: dark; /* light mode = grey (Mark 2026-11-19: bg 50% grey, cards 70% grey) */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
@@ -456,3 +456,37 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .sync-line .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex: none; }
 .sync-line .dot.off { background: var(--muted); }
 .sync-line .dot.bad { background: var(--danger); }
+
+/* ---------- hologram tiles (preview: Getting Started) ---------- */
+.sec-tile.holo {
+  --holo: #f0c75a;                     /* EAGLE gold while in progress */
+  --holo-rgb: 240, 199, 90;
+  position: relative; overflow: hidden; isolation: isolate;
+  grid-template-columns: 1fr auto; grid-template-areas: "name ico" "pages ico" "bar pct";
+  align-items: start;
+  border: 1.5px solid rgba(var(--holo-rgb), .85);
+  box-shadow: 0 0 0 1px rgba(var(--holo-rgb), .18), 0 0 14px rgba(var(--holo-rgb), .35), inset 0 0 18px rgba(var(--holo-rgb), .12);
+  background:
+    linear-gradient(180deg, rgba(var(--holo-rgb), .07), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(var(--holo-rgb), .05) 0 1px, transparent 1px 4px),
+    var(--card);
+}
+.sec-tile.holo.done { --holo: #4ee0a0; --holo-rgb: 78, 224, 160; }   /* Jarvis "completed" green */
+.sec-tile.holo::before {               /* slow light sweep */
+  content: ''; position: absolute; inset: -40% -60%; z-index: -1; pointer-events: none;
+  background: linear-gradient(105deg, transparent 42%, rgba(var(--holo-rgb), .16) 50%, transparent 58%);
+  animation: holo-sweep 5s ease-in-out infinite;
+}
+@keyframes holo-sweep { 0%, 55% { transform: translateX(-60%); } 100% { transform: translateX(60%); } }
+@media (prefers-reduced-motion: reduce) { .sec-tile.holo::before { animation: none; } }
+.sec-tile.holo .sec-ico { grid-area: ico; grid-row: 1 / 3; font-size: 60px; line-height: 1; color: var(--muted); text-shadow: 0 0 10px color-mix(in srgb, var(--muted) 55%, transparent); align-self: start; justify-self: end; }
+.sec-tile.holo .sec-name { grid-area: name; display: flex; flex-direction: column; line-height: 1.2; }
+.sec-tile.holo .sec-pages { grid-area: pages; }
+.sec-tile.holo .bar { grid-area: bar; margin-top: 6px; }
+.sec-tile.holo .sec-pct { grid-area: pct; margin-top: 6px; color: var(--holo); }
+.sec-tile.holo .bar span { background: linear-gradient(90deg, rgba(var(--holo-rgb), .55), var(--holo)); box-shadow: 0 0 8px rgba(var(--holo-rgb), .6); }
+
+/* both themes now use dark surfaces (light = grey), so these apply everywhere */
+.tabbar a.on { color: var(--gold); }
+.pick button.on { background: var(--green); border-color: var(--green); }
+.warn-t, .mn-row-end small.warn-t { color: var(--gold); }
