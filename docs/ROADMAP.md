@@ -123,3 +123,7 @@ Rules to keep it that way:
 7. **Bug-fix flow**: reproduce with Colin's backup file (placeholdered copy is fine) on desktop
    preview → fix → test restore of that file → commit → Mark pushes → app updates on next open.
 8. Never clear site data / "Erase" as a fix. Erase is for testing only.
+9. **Several copies of the app can be open at once** (desktop preview iPhone+iPad frames, two tabs). The project store
+   saves field-by-field and merges into storage; docstores reload on a BroadcastChannel ping; sync runs under a
+   Web Lock. Never write a whole stored doc from a stale in-memory copy. (Bug found 2026-11-20: Contacts lost in
+   preview after sync made the idle frame save; fixed in 2ad95a9, test: scratchpad two_frames/two_tasks.)
