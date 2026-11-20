@@ -284,6 +284,7 @@ export const SECTIONS: Section[] = [
     id: 'approval', title: 'Proposal Approval', short: 'Approval', pages: 'p. 11', icon: '✓',
     groups: [
       {
+        title: 'Brief Project Description',
         intro: "Don't begin work until all four approvals are signed. The council/district approval must be last.",
         fields: [{
           id: 'appr.brief', type: 'long', label: 'Brief project description', pdf: 'Project Description',
