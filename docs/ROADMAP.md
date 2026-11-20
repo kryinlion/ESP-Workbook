@@ -34,6 +34,10 @@ All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mar
 - Billing: Google Cloud **free trial** ($300 credit, 90 days). ⏰ **Before ~2027-02-10**, Mark activates the full
   pay-as-you-go account (Cloud Billing → Activate) or backups/photo storage stop when the trial ends (~2027-02-17).
   Usage should stay inside the always-free tier (≈$0/mo). $1 budget alert: Cloud Billing → Budgets & alerts.
+- API key: public by design (GitHub secret-scanning alert 2026-11-19 = expected; close as "Won't fix"). Recommended:
+  Cloud Console → Credentials → Browser key → Application restrictions → Websites: `kryinlion.github.io/*` +
+  `eagle-scout-project-beaa1.firebaseapp.com/*`. A friend using the same app URL is unaffected (restriction = address, not person).
+  New web address or native app → add it to the list.
 
 ## Decisions (locked 2026-11-19)
 - **Provider: Firebase** (never pauses; Supabase free pauses after 7 days idle). Account owned by Mark (adult).
@@ -70,7 +74,8 @@ All planned feature phases (P0–P5, P6a) done 2026-11-19. Next: polish from Mar
   converge. Protected fields + signatures + donor contact info NEVER sync; only a "pk:" flag so a new device shows
   "Re-enter these". Device bookkeeping in IndexedDB key `_sync` (keys starting `_` are excluded from all backups).
   Tests: `npm run test:sync` (20 ✓), rules 23 ✓, two-device E2E on local emulators ✓ (`?emu` on localhost only).
-- **P7 Native** (Capacitor, TestFlight).
+- **P7 Native** (Capacitor, TestFlight). ⚠ The Firebase browser key is restricted to websites (`kryinlion.github.io/*`,
+  `eagle-scout-project-beaa1.firebaseapp.com/*`) — a native build must add an **iOS app restriction** (bundle id) or its own key.
 - **First update phase / last phase — Multi-Scout ("bring your own backup")**: let other Scouts use the app
   with a backup destination of their choice at setup (their own Firebase/Supabase project, Google Drive,
   iCloud-file only, or "device only"). Needs: a first-run setup screen, a pluggable `BackupTarget`
