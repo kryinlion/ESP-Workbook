@@ -586,3 +586,73 @@ select.inp { appearance: none; -webkit-appearance: none; }
   .mn-stats .mn-k { font-size: 17px; }
   .mn-stats b { font-size: 24px; }
 }
+
+/* ---------- new-user guidance: tour spotlight, bubble, welcome, ? help ---------- */
+.tour { position: fixed; inset: 0; z-index: 90; }
+.tour-dim { position: fixed; inset: 0; background: rgba(4,8,12,.62); }
+.tour-hole {
+  position: fixed; border-radius: 16px; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(4,8,12,.62), 0 0 0 2px rgba(240,199,90,.9), 0 0 18px 4px rgba(240,199,90,.45);
+  transition: left .35s ease, top .35s ease, width .35s ease, height .35s ease;
+  animation: tour-pulse 1.8s ease-in-out infinite;
+}
+@keyframes tour-pulse {
+  0%, 100% { box-shadow: 0 0 0 9999px rgba(4,8,12,.62), 0 0 0 2px rgba(240,199,90,.9), 0 0 14px 2px rgba(240,199,90,.35); }
+  50%      { box-shadow: 0 0 0 9999px rgba(4,8,12,.62), 0 0 0 3px rgba(255,226,140,1), 0 0 26px 8px rgba(240,199,90,.55); }
+}
+.tour-bubble {
+  position: fixed; z-index: 91; padding: 14px 16px 12px; border-radius: 16px; color: #f2f4f7;
+  background: linear-gradient(160deg, #13263a, #0f1d2b); border: 1.5px solid rgba(240,199,90,.85);
+  box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 0 16px rgba(240,199,90,.25);
+  animation: tour-pop .38s cubic-bezier(.2,1.4,.4,1) both;
+}
+.tour-bubble.below { transform-origin: var(--ax) 0; }
+.tour-bubble.above { transform-origin: var(--ax) 100%; }
+@keyframes tour-pop { from { opacity: 0; transform: scale(.85) translateY(var(--pop-y, 8px)); } to { opacity: 1; transform: none; } }
+.tour-bubble.above { --pop-y: -8px; }
+.tour-bubble::before {                       /* pointer arrow */
+  content: ''; position: absolute; left: calc(var(--ax) - 9px); width: 16px; height: 16px; background: #13263a;
+  border: 1.5px solid rgba(240,199,90,.85); transform: rotate(45deg);
+}
+.tour-bubble.below::before { top: -9.5px; border-right: 0; border-bottom: 0; }
+.tour-bubble.above::before { bottom: -9.5px; border-left: 0; border-top: 0; background: #0f1d2b; }
+.tour-bubble h3 { font-size: 18px; margin: 0 0 4px; color: #f0c75a; }
+.tour-bubble p { margin: 0 0 10px; font-size: 15px; line-height: 1.45; color: #dfe6ee; }
+.tour-bubble .tour-count { font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #93a0ad; margin: 0 0 2px; }
+.tour-btns { display: flex; align-items: center; gap: 8px; }
+.tour-btns .spacer { flex: 1; }
+.tour-btns .lnk-btn { color: #93a0ad; font-size: 14px; }
+.tour-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+.tour-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.2); }
+.tour-dots i.past { background: rgba(240,199,90,.45); }
+.tour-dots i.on { background: #f0c75a; box-shadow: 0 0 8px rgba(240,199,90,.8); width: 18px; border-radius: 4px; }
+
+.welcome-bg { position: fixed; inset: 0; z-index: 95; background: rgba(4,8,12,.78); display: grid; place-items: center; padding: 20px; }
+.welcome {
+  width: min(380px, 100%); text-align: center; padding: 26px 22px 18px; border-radius: 22px; color: #f2f4f7;
+  background: linear-gradient(160deg, #183553, #0f1d2b); border: 1.5px solid rgba(240,199,90,.85);
+  box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 24px rgba(240,199,90,.25); animation: tour-pop .45s cubic-bezier(.2,1.4,.4,1) both;
+}
+.welcome-ico { font-size: 54px; line-height: 1; color: #f0c75a; text-shadow: 0 0 18px rgba(240,199,90,.6); margin-bottom: 10px; }
+.welcome h2 { font-size: 22px; margin-bottom: 8px; }
+.welcome p { color: #cfd8e2; font-size: 15.5px; line-height: 1.5; margin: 0 0 6px; }
+.welcome .tour-dots { margin: 14px 0 6px; }
+.welcome-skip { display: block; margin: 8px auto 0; color: #93a0ad; text-align: center; }
+
+.help-btn { font-size: 20px; font-weight: 800; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; border: 0; background: var(--navy-2); color: #f0c75a; cursor: pointer; flex: none; }
+.help-bg { position: fixed; inset: 0; z-index: 80; background: rgba(4,8,12,0); pointer-events: none; transition: background .3s; }
+.help-bg.on { background: rgba(4,8,12,.55); pointer-events: auto; }
+.help-panel {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(360px, 88vw); padding: calc(16px + var(--safe-t)) 16px 16px;
+  background: var(--bg); border-left: 1.5px solid rgba(240,199,90,.6); box-shadow: -10px 0 40px rgba(0,0,0,.45);
+  transform: translateX(105%); transition: transform .35s cubic-bezier(.2,.9,.3,1); overflow-y: auto;
+}
+.help-bg.on .help-panel { transform: none; }
+.help-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.help-next { display: grid; gap: 3px; border-color: rgba(240,199,90,.6); }
+.help-next .help-k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gold); }
+@media (prefers-reduced-motion: reduce) { .tour-hole, .tour-bubble, .welcome { animation: none; } .help-panel { transition: none; } }
+/* Saved indicator is now a small icon (frees room for the project title on Home) */
+.saved { font-size: 15px; font-weight: 800; width: 18px; text-align: center; color: #6fd3a4; }
+.saved.saving { color: var(--gold); font-size: 11px; letter-spacing: 1px; }
+.brand span.two { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.15; }

@@ -56,7 +56,7 @@ export function Home() {
       <DueSoon />
 
       <h2 class="h2">Workbook</h2>
-      <div class="sec-grid" ref={gridRef}>
+      <div class="sec-grid" ref={gridRef} data-tour="workbook">
         {SECTIONS.map((s, i) => {
           const sp = sectionProgress(s, v);
           return (
@@ -73,7 +73,7 @@ export function Home() {
 
       <MoneyCard />
 
-      <a href="#/decks" class="card deck-link">
+      <a href="#/decks" class="card deck-link" data-tour="decks">
         <span class="ti">▶</span>
         <span><b>Presentations</b><small>Proposal, progress update, and project report — PowerPoint or PDF</small></span>
       </a>

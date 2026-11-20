@@ -137,7 +137,7 @@ export function Hero({ pct, done, total, below }: { pct: number; done: number; t
   const toNext = next ? Math.max(0, Math.ceil((next.at / 100) * total) - done) : 0;
 
   return (
-    <section class="hero2">
+    <section class="hero2" data-tour="ring">
       <div class="hero2-in" ref={box}>
         <span class="hero-label" style={{ fontSize: L ? `${L.label.size}px` : '11px' }}>Eagle Scout Leadership Service Project</span>
         {L && (

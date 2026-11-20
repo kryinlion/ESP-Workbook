@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { saveState, useProject } from './core/store';
 import { MODULES } from './modules/registry';
 import { Home } from './modules/home';
@@ -10,6 +10,9 @@ import { Decks } from './modules/decks';
 import { Meetings } from './modules/meetings';
 import { Money } from './modules/money';
 import { BackupPrompt } from './ui/backupPrompt';
+import { TourOverlay, Welcome, startTour } from './tour/tour';
+import { HOME_TOUR } from './tour/tours';
+import { HelpButton, HelpPanel } from './tour/help';
 
 export function useRoute() {
   const [r, setR] = useState(location.hash.slice(1) || '/');
@@ -43,6 +46,18 @@ export function App() {
   const parts = route.split('/').filter(Boolean);
   const top = parts[0] || 'home';
   const back = backFor(parts);
+  // Home title: shrink a little (17→14px) to fit one line; if it still doesn't fit, wrap to two lines.
+  const titleRef = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    const fit = () => {
+      const el = titleRef.current; if (!el) return;
+      el.classList.remove('two'); el.style.fontSize = '';
+      for (let px = 17; px >= 14; px -= 0.5) { el.style.fontSize = `${px}px`; if (el.scrollWidth <= el.clientWidth) return; }
+      el.style.fontSize = '15px'; el.classList.add('two');
+    };
+    fit(); window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  });
 
   let screen;
   if (top === 'home') screen = <Home />;
@@ -59,15 +74,19 @@ export function App() {
       <header class="topbar">
         {back
           ? <a href={back.href} class="topback" aria-label={`Back to ${back.label}`}><span class="chev">‹</span><span>{back.label}</span></a>
-          : <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span>{p.values['project.title'] || 'My Eagle Project'}</span></a>}
-        <span class={`saved ${saveState}`} aria-live="polite">{saveState === 'saving' ? 'Saving…' : 'Saved ✓'}</span>
-        <a href="#/export" class="share-btn" aria-label="Export and backup">⇪</a>
+          : <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span ref={titleRef}>{p.values['project.title'] || 'My Eagle Project'}</span></a>}
+        <span class={`saved ${saveState}`} aria-live="polite" aria-label={saveState === 'saving' ? 'Saving' : 'Saved'} data-hud-tip="Saved">{saveState === 'saving' ? '•••' : '✓'}</span>
+        <HelpButton />
+        <a href="#/export" class="share-btn" data-tour="backup" aria-label="Export and backup">⇪</a>
       </header>
       <main>{screen}</main>
       <BackupPrompt />
+      <HelpPanel />
+      <Welcome onTour={() => startTour(HOME_TOUR)} />
+      <TourOverlay />
       <nav class="tabbar">
         {MODULES.filter((m) => m.tab).map((m) => (
-          <a href={`#/${m.id === 'home' ? '' : m.id}`} class={top === m.id ? 'on' : ''}>
+          <a href={`#/${m.id === 'home' ? '' : m.id}`} class={top === m.id ? 'on' : ''} data-tour={`tab-${m.id}`}>
             <span class="ti">{m.icon}</span><span class="tl">{m.short}</span>
           </a>
         ))}
