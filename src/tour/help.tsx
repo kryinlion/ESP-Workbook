@@ -2,9 +2,10 @@ import { useEffect, useState } from 'preact/hooks';
 import { useProject } from '../core/store';
 import { CHECKLIST } from '../workbook/schema';
 import { startTour } from './tour';
-import { HOME_TOUR } from './tours';
+import { HOME_TOUR, SCREEN_TIPS } from './tours';
 
 // "?" button → slide-in panel. Starter version (Mark and Claude are still designing the next-step logic).
+const screenNow = () => location.hash.replace(/^#\/?/, '').split('/')[0] || 'home';
 let open = false;
 const subs = new Set<() => void>();
 export function openHelp(v = true) { open = v; subs.forEach((f) => f()); }
@@ -30,8 +31,9 @@ export function HelpPanel() {
             <span>{CHECKLIST[next]}</span>
           </a>
         ) : <div class="card help-next"><b>Every workbook step is checked off. 🦅</b></div>}
+        {SCREEN_TIPS[screenNow()] && <button type="button" class="btn ghost wide" onClick={() => { openHelp(false); setTimeout(() => startTour(SCREEN_TIPS[screenNow()]), 300); }}>💡 Show tips for this screen</button>}
         <button type="button" class="btn ghost wide" onClick={() => { openHelp(false); setTimeout(() => startTour(HOME_TOUR), 300); }}>▶ Replay the tour</button>
-        <p class="hint" style={{ marginTop: '14px' }}>More help is coming here: tips for each screen and smarter "what to do next" suggestions.</p>
+        <p class="hint" style={{ marginTop: '14px' }}>Smarter "what to do next" suggestions are coming here.</p>
       </aside>
     </div>
   );

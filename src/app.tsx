@@ -10,8 +10,8 @@ import { Decks } from './modules/decks';
 import { Meetings } from './modules/meetings';
 import { Money } from './modules/money';
 import { BackupPrompt } from './ui/backupPrompt';
-import { TourOverlay, Welcome, startTour } from './tour/tour';
-import { HOME_TOUR } from './tour/tours';
+import { ScreenTips, TourOverlay, Welcome, startTour } from './tour/tour';
+import { HOME_TOUR, SCREEN_TIPS } from './tour/tours';
 import { HelpButton, HelpPanel } from './tour/help';
 import { QuestCelebrate } from './tour/quests';
 
@@ -86,6 +86,7 @@ export function App() {
       <Welcome onTour={() => startTour(HOME_TOUR)} />
       <TourOverlay />
       <QuestCelebrate />
+      <ScreenTips screen={parts.length === 1 || (top === 'workbook' && parts.length === 2) || (top === 'timeline') ? top : ''} tips={SCREEN_TIPS} />
       <nav class="tabbar">
         {MODULES.filter((m) => m.tab).map((m) => (
           <a href={`#/${m.id === 'home' ? '' : m.id}`} class={top === m.id ? 'on' : ''} data-tour={`tab-${m.id}`}>

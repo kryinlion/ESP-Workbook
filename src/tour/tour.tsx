@@ -70,19 +70,30 @@ export function TourOverlay() {
       {r && <div class="tour-hole" style={{ left: `${r.left - pad}px`, top: `${r.top - pad}px`, width: `${r.width + pad * 2}px`, height: `${r.height + pad * 2}px` }} />}
       {!r && <div class="tour-dim" />}
       <div key={a.i} class={`tour-bubble ${below ? 'below' : 'above'}`} style={{ left: `${left}px`, width: `${bw}px`, top: top !== undefined ? `${top}px` : undefined, bottom: bottom !== undefined ? `${bottom}px` : undefined, '--ax': `${arrowX}px` } as any}>
-        <p class="tour-count">{a.i + 1} of {n}</p>
+        <p class="tour-count">{a.tour.id.startsWith('tips-') ? (n > 1 ? `Tip ${a.i + 1} of ${n}` : 'Tip') : `${a.i + 1} of ${n}`}</p>
         <h3>{step.title}</h3>
         <p>{step.body}</p>
         <div class="tour-btns">
-          <button type="button" class="lnk-btn" onClick={end}>Skip tour</button>
+          <button type="button" class="lnk-btn" onClick={end}>{n === 1 ? '' : a.tour.id.startsWith('tips-') ? 'Skip tips' : 'Skip tour'}</button>
           <span class="spacer" />
           {a.i > 0 && <button type="button" class="btn ghost small" onClick={() => go(a.i - 1)}>Back</button>}
-          <button type="button" class="btn small" onClick={() => go(a.i + 1)}>{a.i === n - 1 ? 'Done' : 'Next'}</button>
+          <button type="button" class="btn small" onClick={() => go(a.i + 1)}>{a.i === n - 1 ? (a.tour.id.startsWith('tips-') ? 'Got it' : 'Done') : 'Next'}</button>
         </div>
-        <div class="tour-dots">{a.tour.steps.map((_, j) => <i class={j === a.i ? 'on' : j < a.i ? 'past' : ''} />)}</div>
+        {n > 1 && <div class="tour-dots">{a.tour.steps.map((_, j) => <i class={j === a.i ? 'on' : j < a.i ? 'past' : ''} />)}</div>}
       </div>
     </div>
   );
+}
+
+/** First visit to a main screen → its tips (after the welcome has been seen or skipped; never on top of another tour). */
+export function ScreenTips({ screen, tips }: { screen: string; tips: Record<string, Tour> }) {
+  useEffect(() => {
+    const t = tips[screen];
+    if (!t || tourSeen(t.id) || !welcomeSeen()) return;
+    const timer = setTimeout(() => { if (!active && !tourSeen(t.id)) startTour(t); }, 900);
+    return () => clearTimeout(timer);
+  }, [screen]);
+  return null;
 }
 
 // ── First-launch welcome (3 cards) → offers the Home tour
