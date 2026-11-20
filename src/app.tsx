@@ -62,7 +62,7 @@ export function App() {
 
   let screen;
   if (top === 'home') screen = <Home />;
-  else if (top === 'workbook') screen = <Workbook sectionId={parts[1]} />;
+  else if (top === 'workbook') screen = <Workbook sectionId={parts[1]} focusId={parts[2]} />;
   else if (top === 'export') screen = <ExportScreen />;
   else if (top === 'timeline') screen = <Timeline view={parts[1]} />;
   else if (top === 'decks') screen = <Decks deckId={parts[1]} arg={parts[2]} />;
@@ -86,7 +86,7 @@ export function App() {
       <Welcome onTour={() => startTour(HOME_TOUR)} />
       <TourOverlay />
       <QuestCelebrate />
-      <ScreenTips screen={parts.length === 1 || (top === 'workbook' && parts.length === 2) || (top === 'timeline') ? top : ''} tips={SCREEN_TIPS} />
+      <ScreenTips screen={parts.length === 1 || (top === 'workbook' && parts.length >= 2) || (top === 'timeline') ? top : ''} tips={SCREEN_TIPS} />
       <nav class="tabbar">
         {MODULES.filter((m) => m.tab).map((m) => (
           <a href={`#/${m.id === 'home' ? '' : m.id}`} class={top === m.id ? 'on' : ''} data-tour={`tab-${m.id}`}>

@@ -124,7 +124,7 @@ export function FieldView({ f, showLabel }: { f: Field; showLabel: boolean }) {
         ? <LimitedInput id={id} value={v} onChange={set} max={f.max} clean={f.clean} />
         : <SimpleInput id={id} type={f.type} value={v} onChange={set} />;
   }
-  return <div class={`field t-${f.type}${f.half ? ' half' : ''}`}>{label}{prompt}{body}{hint}</div>;
+  return <div class={`field t-${f.type}${f.half ? ' half' : ''}`} data-fid={f.id}>{label}{prompt}{body}{hint}</div>;
 }
 
 function NameEcho({ label, from }: { label: string; from: string }) {

@@ -4,13 +4,24 @@ import { SECTIONS } from '../workbook/schema';
 import { sectionProgress } from '../workbook/progress';
 import { FieldView } from '../ui/fields';
 
-export function Workbook({ sectionId }: { sectionId?: string }) {
+export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?: string }) {
   const p = useProject();
   const idx = Math.max(0, SECTIONS.findIndex((s) => s.id === sectionId));
   const s = SECTIONS[idx];
   const sp = sectionProgress(s, p.values);
   const chips = useRef<HTMLDivElement>(null);
   useEffect(() => { chips.current?.querySelector('.on')?.scrollIntoView({ inline: 'center', block: 'nearest' }); }, [idx]);
+  // "Go" from the ? panel lands on a specific box: scroll to it and glow it briefly
+  useEffect(() => {
+    if (!focusId) return;
+    const t = setTimeout(() => {
+      const el = document.querySelector<HTMLElement>(`[data-fid="${focusId}"]`);
+      if (!el) return;
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.classList.remove('jump'); void el.offsetWidth; el.classList.add('jump');
+    }, 250);
+    return () => clearTimeout(t);
+  }, [focusId, idx]);
   const prev = SECTIONS[idx - 1], next = SECTIONS[idx + 1];
   return (
     <div class="page wb">
