@@ -3,6 +3,7 @@ import { useProject } from '../core/store';
 import { SECTIONS } from '../workbook/schema';
 import { sectionProgress } from '../workbook/progress';
 import { FieldView } from '../ui/fields';
+import { bandOf } from '../workbook/bands';
 
 export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?: string }) {
   const p = useProject();
@@ -37,7 +38,7 @@ export function Workbook({ sectionId, focusId }: { sectionId?: string; focusId?:
         <span class="bar"><span style={{ width: `${sp.pct}%` }} /></span>
       </div>
       {s.groups.map((g, gi) => (
-        <section class="card group" data-g={`${s.id}-${gi}`}>
+        <section class={`card group${g.title && bandOf(s.id, gi) ? ` band band-${bandOf(s.id, gi)}` : ''}`} data-g={`${s.id}-${gi}`}>
           {g.title && <h2>{g.title}</h2>}
           {g.intro && <p class="intro">{g.intro}</p>}
           <div class="fields">

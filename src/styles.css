@@ -742,27 +742,29 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .safe-row span:first-child { display: grid; }
 .safe-row small { color: var(--muted); font-size: 13px; }
 
-/* Section color bands — Contacts (Mark 2026-11-20). Scouting colors:
-   green #006B3F · red #CE1126 · dark blue #003F87 · pale blue #9AB3D5 · tan #D6CEBD */
-.group[data-g="contacts-0"] { --band: 0,107,63; }      /* Candidate: green */
-.group[data-g="contacts-1"] { --band: 206,17,38; }     /* Parent/Guardian: red */
-.group[data-g="contacts-2"], .group[data-g="contacts-7"], .group[data-g="contacts-8"] { --band: 154,179,213; }   /* Unit Information, Council Service Center, Council/District Approval Rep: pale blue */
-.group[data-g="contacts-3"], .group[data-g="contacts-4"], .group[data-g="contacts-9"] { --band: 214,206,189; }  /* Scoutmaster, Committee Rep, Project Coach: tan */
-.group[data-g="contacts-5"], .group[data-g="contacts-6"] { --band: 0,63,135; }      /* Project Beneficiary + Representative: dark blue */
-.group[data-g="contacts-0"], .group[data-g="contacts-1"], .group[data-g="contacts-2"], .group[data-g="contacts-3"], .group[data-g="contacts-4"], .group[data-g="contacts-5"], .group[data-g="contacts-6"], .group[data-g="contacts-7"], .group[data-g="contacts-8"], .group[data-g="contacts-9"] {
+/* Section color bands (Mark 2026-11-20) — which box gets which color: src/workbook/bands.ts */
+.band-green    { --band: 0,107,63; }
+.band-red      { --band: 206,17,38; }
+.band-darkblue { --band: 0,63,135; }
+.band-paleblue { --band: 154,179,213; }
+.band-tan      { --band: 214,206,189; }
+.band-purple   { --band: 91,51,168; }
+.group.band {
   padding-top: 0; overflow: hidden;
   border: 2px solid rgb(var(--band));
   box-shadow: 0 0 14px rgba(var(--band),0.38), inset 0 0 10px rgba(var(--band),0.12);
 }
-.group[data-g="contacts-0"] > h2, .group[data-g="contacts-1"] > h2, .group[data-g="contacts-2"] > h2, .group[data-g="contacts-3"] > h2, .group[data-g="contacts-4"] > h2, .group[data-g="contacts-5"] > h2, .group[data-g="contacts-6"] > h2, .group[data-g="contacts-7"] > h2, .group[data-g="contacts-8"] > h2, .group[data-g="contacts-9"] > h2 {
+.group.band > h2 {
   margin: 0 -16px 14px; padding: 12px 16px;
   background: rgb(var(--band)); color: #fff; letter-spacing: .01em;
 }
+.group.band .intro { margin-top: -4px; }
 /* red reads brighter — outline dialed back, header stays full */
-.group[data-g="contacts-1"] { border-color: rgba(var(--band),0.7); box-shadow: 0 0 12px rgba(var(--band),0.24), inset 0 0 10px rgba(var(--band),0.08); }
+.group.band-red { border-color: rgba(var(--band),0.7); box-shadow: 0 0 12px rgba(var(--band),0.24), inset 0 0 10px rgba(var(--band),0.08); }
 /* light colors (pale blue, tan) — softer outline, dark header text */
-.group[data-g="contacts-2"], .group[data-g="contacts-3"], .group[data-g="contacts-4"], .group[data-g="contacts-7"], .group[data-g="contacts-8"], .group[data-g="contacts-9"] {
+.group.band-paleblue, .group.band-tan {
   border-color: rgba(var(--band),0.55); box-shadow: 0 0 12px rgba(var(--band),0.16), inset 0 0 10px rgba(var(--band),0.05);
 }
-.group[data-g="contacts-2"] > h2, .group[data-g="contacts-3"] > h2, .group[data-g="contacts-4"] > h2, .group[data-g="contacts-7"] > h2, .group[data-g="contacts-8"] > h2, .group[data-g="contacts-9"] > h2 { color: #1d2733; }
-.group[data-g="contacts-0"] .intro, .group[data-g="contacts-1"] .intro, .group[data-g="contacts-2"] .intro, .group[data-g="contacts-3"] .intro, .group[data-g="contacts-4"] .intro, .group[data-g="contacts-5"] .intro, .group[data-g="contacts-6"] .intro, .group[data-g="contacts-7"] .intro, .group[data-g="contacts-8"] .intro, .group[data-g="contacts-9"] .intro { margin-top: -4px; }
+.group.band-paleblue > h2, .group.band-tan > h2 { color: #1d2733; }
+/* Photos & Drawings: extra room so the tan band doesn't touch the green Add button */
+.group[data-g="proposal-11"] > h2 { margin-bottom: 22px; }
