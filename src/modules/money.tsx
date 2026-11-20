@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { useProject } from '../core/store';
 import { DateInput, SimpleInput, isoToUs, money } from '../ui/fields';
 import { Photos } from '../ui/photos';
@@ -64,7 +64,7 @@ function Overview() {
         <div class="card ws-fx fx-raised">{MOTES.slice(0, 6).map((d, i) => <span class={`fx-mote fx-mote-${i + 1}`} style={{ animationDelay: `${d - 3}s` }} />)}<span class="mn-k">Raised</span><b>{money(t.raised)}</b></div>
         <div class="card ws-fx fx-spent">{MOTES.slice(4, 10).map((d, i) => <span class={`fx-mote fx-mote-${i + 5}`} style={{ animationDelay: `${d - 7}s` }} />)}<span class="mn-k">Spent</span><b>{money(t.spent)}</b></div>
         <div class="card"><span class="mn-k">Balance</span><b class={t.balance < 0 ? 'neg' : ''}>{money(t.balance)}</b></div>
-        <a class="card" href="#/money/donations"><span class="mn-k">Thank-yous to send</span><b class={t.thankYous.length ? 'warn-t' : ''}>{t.thankYous.length}</b></a>
+        <ThankYouBox n={t.thankYous.length} />
       </div>
 
       <div class="deck-actions mn-actions">
@@ -126,6 +126,29 @@ function CopyCard() {
       )}
       {done && <p class="toast">{done}</p>}
     </section>
+  );
+}
+
+// Purple Work Shop box. While thank-yous are owed, its edge does Friday's "containment-field
+// flicker" — a quick bright spike — at random moments (every 3–11 s) to catch Colin's eye.
+function ThankYouBox({ n }: { n: number }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    if (!n || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let t: number;
+    const zap = () => {
+      const el = ref.current; if (!el) return;
+      el.classList.remove('zap'); void el.offsetWidth; el.classList.add('zap');
+      t = window.setTimeout(zap, 3000 + Math.random() * 8000);
+    };
+    t = window.setTimeout(zap, 800 + Math.random() * 2500);
+    return () => clearTimeout(t);
+  }, [n > 0]);
+  return (
+    <a ref={ref} class={`card ws-fx fx-thanks${n ? ' owed' : ''}`} href="#/money/donations">
+      {MOTES.slice(2, 8).map((d, i) => <span class={`fx-mote fx-mote-${i + 3}`} style={{ animationDelay: `${d - 4}s` }} />)}
+      <span class="mn-k">Thank-yous to send</span><b>{n}</b>
+    </a>
   );
 }
 

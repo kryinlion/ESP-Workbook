@@ -560,3 +560,16 @@ select.inp { appearance: none; -webkit-appearance: none; }
 .limit-n.full { color: var(--gold); font-weight: 700; }
 .limit-bad { color: #ff8a8a; font-weight: 600; }
 .inp.inp-bad { border-color: #ff8a8a; box-shadow: 0 0 0 3px rgba(255,138,138,.2); }
+/* Thank-yous: purple, toned down like Raised/Spent; random bright edge "zap" while any are owed */
+.fx-thanks { --fx: 182,140,255; --fx-hi: 236,224,255; --fx-tint: 32,22,52; animation-duration: 18s; }
+.fx-thanks .fx-mote { opacity: .6; }
+.fx-thanks.owed b { color: rgb(var(--fx-hi)); text-shadow: 0 0 8px rgba(var(--fx),0.6); }
+.fx-thanks.zap { animation: ws-fx-flicker 18s steps(1, end) infinite, ws-fx-zap 0.9s steps(1, end) 1; } /* zap listed last so it wins */
+@keyframes ws-fx-zap {
+  0%   { border-color: rgba(var(--fx-hi),1); box-shadow: 0 0 26px rgba(var(--fx),0.85), inset 0 0 18px rgba(var(--fx),0.40); }
+  12%  { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
+  22%  { border-color: rgba(var(--fx-hi),1); box-shadow: 0 0 30px rgba(var(--fx),0.95), inset 0 0 20px rgba(var(--fx),0.45); }
+  34%  { border-color: rgba(var(--fx),0.55); box-shadow: 0 0 12px rgba(var(--fx),0.25), inset 0 0 9px rgba(var(--fx),0.10); }
+  46%  { border-color: rgba(var(--fx),0.85); box-shadow: 0 0 18px rgba(var(--fx),0.55), inset 0 0 14px rgba(var(--fx),0.25); }
+  60%, 100% { border-color: rgba(var(--fx),0.45); box-shadow: 0 0 10px rgba(var(--fx),0.18), inset 0 0 8px rgba(var(--fx),0.06); }
+}
