@@ -1,0 +1,73 @@
+/* ── Theme "OuterSpace" (build name: Style TNG, from the EMF MySpace TNG theme) — a starship computer look:
+   black space, thick flat color bars that bend round corners ("elbows"), pill buttons, tall condensed capitals.
+   Rules carried over: flat (no gradients/shadows on frame pieces), text is black on a color or a color on black,
+   every color ≥ 4.5:1 against black. Scouting colors are kept, lightened just enough to pass on black. */
+:root[data-theme='space'] {
+  --space: #000; --orange: #ff9900; --peach: #ffcc99; --lilac: #cc99cc; --violet: #9999ff; --sky: #99ccff; --gold-l: #ffcc66;
+  --s-red: 221,85,85; --s-green: 102,187,136; --s-navy: 102,136,204; --s-pale: 153,204,255; --s-tan: 232,201,160;
+  --navy: #000; --navy-2: #000;
+  --bg: #000; --card: #000; --ink: #ffcc99; --muted: #c9a98a; --line: #3a2f26; --field: #0d0d0d;
+  --gold: #ff9900; --green: #66bb88; --danger: #dd5555; --gold-soft: #2a1d08;
+  --radius: 0px;
+}
+:root[data-theme='space'] body { font-size: 17px; }
+:root[data-theme='space'] h1, :root[data-theme='space'] h2, :root[data-theme='space'] h3, :root[data-theme='space'] .h2,
+:root[data-theme='space'] .help-sub, :root[data-theme='space'] .btn, :root[data-theme='space'] .chips a, :root[data-theme='space'] .tabbar .tl,
+:root[data-theme='space'] .brand span, :root[data-theme='space'] label, :root[data-theme='space'] .lbl {
+  font-family: 'Antonio', sans-serif; text-transform: uppercase; letter-spacing: .07em;
+}
+:root[data-theme='space'] h1, :root[data-theme='space'] .h2 { color: var(--orange); font-weight: 700; }
+
+/* top bar = upper elbow: lilac bar bending down on the left */
+:root[data-theme='space'] .topbar { background: #000; padding-left: 0; padding-bottom: 12px; }
+:root[data-theme='space'] .topbar::before {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; pointer-events: none;
+  background: linear-gradient(90deg, var(--lilac) 0 34%, #000 34% calc(34% + 6px), var(--orange) 0 70%, #000 70% calc(70% + 6px), var(--sky) 0);
+}
+:root[data-theme='space'] .topbar > :first-child { background: var(--lilac); color: #000; padding: 8px 14px 8px 16px; border-radius: 0 999px 999px 0; }
+:root[data-theme='space'] .topback .chev, :root[data-theme='space'] .topback span { color: #000; }
+:root[data-theme='space'] .brand img { display: none; }
+:root[data-theme='space'] .saved { color: var(--peach); }
+:root[data-theme='space'] .help-btn, :root[data-theme='space'] .set-btn, :root[data-theme='space'] .share-btn { border-radius: 999px; color: #000; width: 44px; }
+:root[data-theme='space'] .help-btn { background: var(--gold-l); }
+:root[data-theme='space'] .set-btn { background: var(--violet); }
+:root[data-theme='space'] .share-btn { background: var(--orange); border-radius: 999px 0 0 999px; margin-right: -16px; width: 52px; }
+
+/* tab bar = lower elbow: row of pills */
+:root[data-theme='space'] .tabbar { background: #000; border-top: 0; gap: 5px; padding-left: 6px; padding-right: 6px; backdrop-filter: none; -webkit-backdrop-filter: none; }
+:root[data-theme='space'] .tabbar a { background: #2a2018; border-radius: 14px; color: var(--peach); }
+:root[data-theme='space'] .tabbar a.on { background: var(--orange); color: #000; }
+
+/* generic panels: black, a lilac column on the left that curves into the top edge */
+:root[data-theme='space'] .card { background: #000; border: 0; border-left: 12px solid var(--violet); border-top: 6px solid var(--violet); border-radius: 30px 0 0 0; }
+:root[data-theme='space'] .hero { background: #000; border-left: 16px solid var(--orange); border-top: 10px solid var(--orange); border-bottom: 10px solid var(--lilac); border-radius: 44px 0 0 44px; }
+:root[data-theme='space'] .hero::after { display: none; }
+
+/* buttons: flat pills, black letters */
+:root[data-theme='space'] .btn { background: var(--orange); color: #000; border-radius: 999px; border: 0; font-weight: 700; }
+:root[data-theme='space'] .btn.ghost { background: var(--violet); color: #000; }
+:root[data-theme='space'] .btn.danger { background: rgb(var(--s-red)); color: #000; }
+:root[data-theme='space'] .lnk-btn { color: var(--sky); }
+:root[data-theme='space'] .inp { background: var(--field); border: 1px solid #4a3a2a; border-radius: 0 12px 12px 0; color: var(--peach); }
+:root[data-theme='space'] .inp:focus { border-color: var(--orange); box-shadow: none; background: #120c04; }
+:root[data-theme='space'] .chips a { background: #2a2018; border: 0; color: var(--peach); border-radius: 999px; }
+:root[data-theme='space'] .chips a.on { background: var(--orange); color: #000; }
+
+/* Scouting color bands → LCARS elbows in the (lightened) Scouting colors */
+:root[data-theme='space'] .band-green, :root[data-theme='space'] .edge.band-green { --band: var(--s-green); }
+:root[data-theme='space'] .band-red, :root[data-theme='space'] .edge.band-red { --band: var(--s-red); }
+:root[data-theme='space'] .band-darkblue, :root[data-theme='space'] .edge.band-darkblue { --band: var(--s-navy); }
+:root[data-theme='space'] .band-paleblue, :root[data-theme='space'] .edge.band-paleblue { --band: var(--s-pale); }
+:root[data-theme='space'] .band-tan, :root[data-theme='space'] .edge.band-tan { --band: var(--s-tan); }
+:root[data-theme='space'] .group.band { border: 0; border-left: 18px solid rgb(var(--band)); border-radius: 40px 0 0 24px; box-shadow: none; background: #000; padding-left: 14px; }
+:root[data-theme='space'] .group.band > h2 {
+  margin: 0 -16px 14px -14px; padding: 10px 16px 8px 12px; background: rgb(var(--band)); color: #000 !important; border-radius: 0 999px 999px 0; font-size: 20px; text-shadow: none;
+}
+:root[data-theme='space'] .card.group.edge { border: 0; border-left: 12px solid rgb(var(--band)); border-radius: 0 0 0 24px; }
+:root[data-theme='space'] .card.group.edge > h2 { color: rgb(var(--band)); }
+:root[data-theme='space'] .help-panel { background: #000; border-left: 14px solid var(--orange); }
+:root[data-theme='space'] .theme-opt { background: #000; border-radius: 0 999px 999px 0; }
+:root[data-theme='space'] .x-btn { background: rgb(var(--s-red)); color: #000; border: 0; }
+:root[data-theme='space'] .tabbar a.on, :root[data-theme='space'] .tabbar a.on .ti, :root[data-theme='space'] .tabbar a.on .tl { color: #000; }
+:root[data-theme='space'] .hero2 { background: #000; border: 0; border-left: 16px solid var(--orange); border-top: 10px solid var(--orange); border-bottom: 10px solid var(--lilac); border-radius: 44px 0 0 44px; box-shadow: none; }
+:root[data-theme='space'] .hero-label { font-family: 'Antonio', sans-serif; color: var(--orange); }

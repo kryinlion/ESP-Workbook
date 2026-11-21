@@ -11,6 +11,11 @@
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="icon" type="image/png" href="icons/icon-192.png" />
     <title>Eagle Project</title>
+    <script>
+      // Dark is the default on every device; Light or a theme only when picked in Settings.
+      (function () { var t = 'dark'; try { t = localStorage.getItem('esp.theme') || 'dark'; } catch (e) {}
+        document.documentElement.dataset.theme = t; })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

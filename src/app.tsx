@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { SettingsButton, SettingsPanel } from './ui/settings';
 import { saveState, useProject } from './core/store';
 import { MODULES } from './modules/registry';
 import { Home } from './modules/home';
@@ -79,11 +80,13 @@ export function App() {
           : <a href="#/" class="brand"><img src="icons/icon-192.png" alt="" /><span ref={titleRef}>{p.values['project.title'] || 'My Eagle Project'}</span></a>}
         <span class={`saved ${saveState}`} aria-live="polite" aria-label={saveState === 'saving' ? 'Saving' : 'Saved'} data-hud-tip="Saved">{saveState === 'saving' ? '•••' : '✓'}</span>
         <HelpButton />
+        <SettingsButton />
         <a href="#/export" class="share-btn" data-tour="backup" aria-label="Export and backup">⇪</a>
       </header>
       <main>{screen}</main>
       <BackupPrompt />
       <HelpPanel />
+      <SettingsPanel />
       <Welcome onTour={() => startTour(HOME_TOUR)} />
       <TourOverlay />
       <QuestCelebrate />
