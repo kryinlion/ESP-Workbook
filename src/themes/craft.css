@@ -67,3 +67,12 @@
 :root[data-theme='craft'] .hero2 { background: linear-gradient(rgba(0,0,0,.42), rgba(0,0,0,.42)), var(--px-dirt) 0 0 / 16px 16px, #6b4a2d; border: 3px solid #000; border-radius: 0; box-shadow: inset 4px 4px 0 rgba(255,255,255,.12), inset -4px -4px 0 rgba(0,0,0,.4); }
 :root[data-theme='craft'] .hero2 .rank-strip { background: rgba(0,0,0,.45); border: 2px solid #000; border-radius: 0; }
 :root[data-theme='craft'] .hero-label { font-family: 'Pixelify Sans', sans-serif; text-shadow: 2px 2px 0 #000; }
+:root[data-theme='craft'] .seg { background: #161617; border: 2px solid #000; border-radius: 0; box-shadow: inset 3px 3px 0 rgba(0,0,0,.6); }
+:root[data-theme='craft'] .seg button, :root[data-theme='craft'] .seg .segl { border-radius: 0; font-family: 'Pixelify Sans', sans-serif; font-weight: 500; }
+:root[data-theme='craft'] .seg button.on, :root[data-theme='craft'] .seg .segl.on { background: var(--px-shade) 0 0 / 16px 16px, #4f8a31; color: #fff; text-shadow: 2px 2px 0 rgba(0,0,0,.6);
+  box-shadow: inset 3px 3px 0 var(--bev-hi), inset -3px -3px 0 var(--bev-lo); outline: 2px solid #000; }
+/* Money glow boxes → stone blocks with a pixel-block cap in their own color (no glow, brackets or motes) */
+:root[data-theme='craft'] .ws-fx { background: var(--px-stone) 0 0 / 24px 24px, var(--card); border: 3px solid #000; border-radius: 0;
+  box-shadow: inset 0 10px 0 rgb(var(--fx)), inset 3px 3px 0 rgba(255,255,255,.1), inset -3px -3px 0 rgba(0,0,0,.4); padding-top: 22px; }
+:root[data-theme='craft'] .ws-fx::before, :root[data-theme='craft'] .ws-fx::after, :root[data-theme='craft'] .ws-fx .fx-mote { display: none; }
+:root[data-theme='craft'] .ws-fx .lnk-btn, :root[data-theme='craft'] .ws-fx .mn-k { text-shadow: 1px 1px 0 #000; }
